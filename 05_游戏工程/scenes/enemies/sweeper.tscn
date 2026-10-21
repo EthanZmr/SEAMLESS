@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/sweeper.gd" id="1_sweeper"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sweeper"]
+size = Vector2(28, 48)
+
+[node name="Sweeper" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_sweeper")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sweeper")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.85098, 0.901961, 0.94902, 1)
+polygon = PackedVector2Array(-14, -24, 14, -24, 14, 24, -14, 24)
+
+[node name="Telegraph" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 0.419608, 0.419608, 0.42)
+polygon = PackedVector2Array(-30, -46, 30, -46, 30, 46, -30, 46)
+
+[node name="Tag" type="Label" parent="."]
+offset_left = -40.0
+offset_top = -62.0
+offset_right = 40.0
+offset_bottom = -38.0
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1

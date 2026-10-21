@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "id": "level_index",
+    "version": 1,
+    "note": "关卡清单。加一张关卡 = 在这里加一条 + 放一份 data/levels/<id>.json。"
+  },
+  "levels": [
+    {
+      "id": "rain_market",
+      "display_name": "雨市",
+      "subtitle": "SEAMLESS · 01",
+      "order": 1,
+      "scene": "res://scenes/main.tscn",
+      "data": "res://data/levels/rain_market.json",
+      "next": ""
+    }
+  ]
+}

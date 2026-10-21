@@ -1,0 +1,10 @@
+{
+  "name": "seamless-project-dashboard",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "《无缝》SEAMLESS 垂直切片项目看板：Remotion 动效 + 原生 DOM，无视频播放器",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  }
+}

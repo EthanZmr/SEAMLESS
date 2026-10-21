@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/level/boss_trigger.gd" id="1_trigger"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(120, 220)
+
+[node name="BossTrigger" type="Area2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_trigger")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(1, 0.419608, 0.419608, 0.08)
+polygon = PackedVector2Array(-60, -110, 60, -110, 60, 110, -60, 110)

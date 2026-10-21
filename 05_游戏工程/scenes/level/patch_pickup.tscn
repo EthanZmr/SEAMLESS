@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/level/patch_pickup.gd" id="1_patch"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_patch"]
+radius = 24.0
+
+[node name="PatchPickup" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_patch")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_patch")
+
+[node name="Tag" type="Label" parent="."]
+offset_left = -28.0
+offset_top = -44.0
+offset_right = 28.0
+offset_bottom = -24.0
+theme_override_font_sizes/font_size = 13
+text = "补丁"
+horizontal_alignment = 1
+modulate = Color(1, 1, 1, 0.55)

@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/lancer.gd" id="1_lancer"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lancer"]
+size = Vector2(30, 56)
+
+[node name="Lancer" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_lancer")
+move_speed = 48.0
+attack_range = 112.0
+detect_range = 260.0
+windup_time = 0.68
+recover_time = 0.75
+attack_damage = 14.0
+max_hp = 55.0
+enemy_name = "截线者"
+body_tint = Color(0.607843, 0.905882, 1, 1)
+speed_label = "慢"
+reach_label = "长"
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lancer")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.607843, 0.905882, 1, 1)
+polygon = PackedVector2Array(-15, -28, 15, -28, 15, 28, -15, 28)
+
+[node name="Telegraph" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 0.419608, 0.419608, 0.42)
+polygon = PackedVector2Array(-58, -52, 58, -52, 58, 52, -58, 52)
+
+[node name="Tag" type="Label" parent="."]
+offset_left = -52.0
+offset_top = -74.0
+offset_right = 52.0
+offset_bottom = -50.0
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1

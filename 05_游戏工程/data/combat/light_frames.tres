@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="AttackFrameSet" format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/attack_frames.gd" id="1_frames"]
+[ext_resource type="Script" path="res://scripts/combat/attack_frame_set.gd" id="2_set"]
+
+[sub_resource type="Resource" id="Resource_light1"]
+script = ExtResource("1_frames")
+total_frames = 12
+startup_frames = 3
+hit_frame = 4
+hit_time = 0.06
+freeze_ms = 75
+recovery_start_frame = 6
+hitbox_forward = 84.0
+hitbox_vertical = 62.0
+jump_cancel_start_frame = 5
+jump_cancel_end_frame = 8
+combo_input_start_frame = 9
+whiff_frames = 12
+needle_reach = 79.0
+needle_body = 37.0
+body_lean = Array[float]([12.0, 16.0])
+pull = false
+pull_min_gap = 0.0
+pull_speed_cap = 0.0
+knockback = 0.0
+punch = 0.0
+attack_cd_after = 0.0
+
+[sub_resource type="Resource" id="Resource_light2"]
+script = ExtResource("1_frames")
+total_frames = 13
+startup_frames = 4
+hit_frame = 5
+hit_time = 0.07
+freeze_ms = 105
+recovery_start_frame = 6
+hitbox_forward = 88.0
+hitbox_vertical = 62.0
+jump_cancel_start_frame = 6
+jump_cancel_end_frame = 9
+combo_input_start_frame = 10
+whiff_frames = 0
+needle_reach = 0.0
+needle_body = 0.0
+body_lean = Array[float]([])
+pull = true
+pull_min_gap = 28.0
+pull_speed_cap = 160.0
+knockback = 0.0
+punch = 0.0
+attack_cd_after = 0.0
+
+[sub_resource type="Resource" id="Resource_light3"]
+script = ExtResource("1_frames")
+total_frames = 18
+startup_frames = 5
+hit_frame = 6
+hit_time = 0.09
+freeze_ms = 160
+recovery_start_frame = 7
+hitbox_forward = 100.0
+hitbox_vertical = 62.0
+jump_cancel_start_frame = 0
+jump_cancel_end_frame = 0
+combo_input_start_frame = 0
+whiff_frames = 0
+needle_reach = 0.0
+needle_body = 0.0
+body_lean = Array[float]([])
+pull = false
+pull_min_gap = 0.0
+pull_speed_cap = 0.0
+knockback = 320.0
+punch = 0.055
+attack_cd_after = 0.3
+
+[resource]
+script = ExtResource("2_set")
+light1 = SubResource("Resource_light1")
+light2 = SubResource("Resource_light2")
+light3 = SubResource("Resource_light3")

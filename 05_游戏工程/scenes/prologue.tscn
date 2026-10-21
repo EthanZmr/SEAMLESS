@@ -1,0 +1,81 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/prologue.gd" id="1_prologue"]
+
+[node name="Prologue" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_prologue")
+
+[node name="Speaker" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 730.0
+offset_right = 1700.0
+offset_bottom = 785.0
+theme_override_font_sizes/font_size = 28
+text = "阿绫"
+
+[node name="Body" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 800.0
+offset_right = 1800.0
+offset_bottom = 980.0
+theme_override_font_sizes/font_size = 27
+text = "他这条手臂，第三次了。"
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 120.0
+offset_top = 1006.0
+offset_right = 900.0
+offset_bottom = 1046.0
+theme_override_font_sizes/font_size = 18
+text = "Enter / J 继续"
+modulate = Color(0.56, 0.7, 0.82, 1)
+
+[node name="Progress" type="Label" parent="."]
+offset_left = 1600.0
+offset_top = 40.0
+offset_right = 1820.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 18
+text = "01 / 34"
+horizontal_alignment = 2
+modulate = Color(0.56, 0.7, 0.82, 1)
+
+[node name="Title" type="Label" parent="."]
+visible = false
+offset_left = 460.0
+offset_top = 390.0
+offset_right = 1460.0
+offset_bottom = 540.0
+theme_override_font_sizes/font_size = 96
+text = "无缝"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+visible = false
+offset_left = 460.0
+offset_top = 560.0
+offset_right = 1460.0
+offset_bottom = 620.0
+theme_override_font_sizes/font_size = 28
+text = "第一针 · 雨市"
+horizontal_alignment = 1
+modulate = Color(0.75, 0.87, 0.94, 1)
+
+[node name="Fade" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

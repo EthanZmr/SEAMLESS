@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/boss/trimmer.gd" id="1_trimmer"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trimmer"]
+size = Vector2(56, 110)
+
+[node name="Trimmer" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_trimmer")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_trimmer")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.94902, 0.937255, 0.901961, 1)
+polygon = PackedVector2Array(-28, -55, 28, -55, 28, 55, -28, 55)
+
+[node name="Telegraph" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 0.419608, 0.419608, 0.32)
+polygon = PackedVector2Array(-70, -90, 70, -90, 70, 90, -70, 90)
+
+[node name="Tag" type="Label" parent="."]
+offset_left = -110.0
+offset_top = -100.0
+offset_right = 110.0
+offset_bottom = -72.0
+theme_override_font_sizes/font_size = 18
+text = "裁断者"
+horizontal_alignment = 1

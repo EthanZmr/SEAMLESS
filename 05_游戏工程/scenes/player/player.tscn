@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(28, 56)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_climb"]
+size = Vector2(44, 64)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="ClimbSensor" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+monitorable = false
+
+[node name="Collision" type="CollisionShape2D" parent="ClimbSensor"]
+shape = SubResource("RectangleShape2D_climb")
+
+[node name="Body" type="Polygon2D" parent="."]
+color = Color(0.247059, 0.878431, 0.815686, 1)
+polygon = PackedVector2Array(-14, -28, 14, -28, 14, 28, -14, 28)
+
+[node name="Overlay" type="Polygon2D" parent="."]
+visible = false
+color = Color(1, 0.360784, 0.478431, 0.42)
+polygon = PackedVector2Array(-18, -30, 18, -30, 18, 30, -18, 30)
+
+[node name="Tag" type="Label" parent="."]
+offset_left = -34.0
+offset_top = -62.0
+offset_right = 34.0
+offset_bottom = -36.0
+theme_override_font_sizes/font_size = 16
+text = "阿针"
+horizontal_alignment = 1

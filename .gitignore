@@ -1,0 +1,34 @@
+# --- Godot ---
+.godot/
+*.tmp
+*.translation
+export/
+build/
+*.exe
+*.pck
+*.zip
+# 导出产物
+*.dmg
+*.app/
+*.x86_64
+*.x86_32
+
+# --- 看板前端 ---
+node_modules/
+09_项目看板/dist/
+
+# --- 系统 / 编辑器 ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# --- 本地设置与日志 ---
+*.local.cfg
+logs/
+*.log
+
+# --- 生成的存档（本地测试残留）---
+saves/

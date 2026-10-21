@@ -1,0 +1,9 @@
+# Godot
+.godot/
+*.tmp
+*.translation
+export/
+build/
+*.exe
+*.pck
+*.zip

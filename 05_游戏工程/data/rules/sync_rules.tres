@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SyncRules" format=3]
+
+[ext_resource type="Script" path="res://scripts/rules/sync_rules.gd" id="1_rules"]
+
+[resource]
+script = ExtResource("1_rules")
+max_sync = 100.0
+min_sync = 0.0
+max_integrity = 100.0
+takeover_duration = 8.0
+takeover_exit_sync = 50.0
+takeover_integrity_cost = 20.0
+zhen_sync_rate = -2.0
+ling_sync_rate = 4.0
+zhen_regen_rate = 1.0
