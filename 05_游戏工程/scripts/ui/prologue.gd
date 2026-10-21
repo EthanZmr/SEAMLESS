@@ -26,32 +26,18 @@ var rain: Array[Vector3] = []
 var rng := RandomNumberGenerator.new()
 
 
-## 从 data/dialogue/prologue_01.json 读对白。失败时退化成单行提示，
-## 保证仍然能按 Enter 进入游戏，而不是卡在空序章。
+## 从 data/dialogue/prologue_01.json 读对白。解析与容错都交给 DialogueScript，
+## 序章这里只负责演出（打字机/标题/淡出）。
+##
+## 序章刻意不用 DialoguePlayer：它有自己的舞台节奏（Esc 跳标题、标题要再按一次
+## 才进游戏），强行套通用推进器会把状态机扭成两套语义。数据层共用就够了。
 func _load_lines() -> void:
-	LINES.clear()
-	var parsed: Variant = null
-	if FileAccess.file_exists(LINES_PATH):
-		parsed = JSON.parse_string(FileAccess.get_file_as_string(LINES_PATH))
-	var raw: Variant = (parsed as Dictionary).get("lines", []) if typeof(parsed) == TYPE_DICTIONARY else []
-	if raw is Array and not (raw as Array).is_empty():
-		for entry in raw:
-			if entry is Dictionary:
-				LINES.append({
-					"who": String(entry.get("who", "")),
-					"text": String(entry.get("text", "")),
-					"color": String(entry.get("color", "#F2EFE6")),
-				})
-	if LINES.is_empty():
-		push_error("Prologue: 无法从 %s 读到 lines，退化为单行提示" % LINES_PATH)
-		LINES.append({
-			"who": "旁白",
-			"text": "（序章数据缺失：%s）" % LINES_PATH,
-			"color": "#6F8FA8",
-		})
-		lines_source = "fallback"
-		return
-	lines_source = "json"
+	var result := DialogueScript.load_lines(LINES_PATH)
+	LINES = result.lines
+	lines_source = result.source
+	if result.source == "fallback":
+		push_error("Prologue: 无法从 %s 读到 lines（%s），退化为单行提示" % [
+			LINES_PATH, result.error])
 
 
 func _ready() -> void:
@@ -65,17 +51,20 @@ func _ready() -> void:
 	_show_line(0)
 
 
+## 字体统一由 Fonts autoload 提供：assets/fonts/ 里没文件时它回退系统字体，
+## 丢一个 ui.ttf / display.ttf 进去就自动换成真字体，这里不用改。
 func _setup_fonts() -> void:
-	var sys := SystemFont.new()
-	sys.font_names = PackedStringArray(["Microsoft YaHei", "Noto Sans CJK SC", "SimHei", "Arial"])
-	for label in [speaker, body, hint, progress, title, subtitle]:
-		label.add_theme_font_override("font", sys)
-	speaker.add_theme_font_size_override("font_size", 28)
+	var ui := Fonts.ui()
+	var display := Fonts.display()
+	for label in [speaker, body, hint, progress, subtitle]:
+		label.add_theme_font_override("font", ui)
+	title.add_theme_font_override("font", display)
+	speaker.add_theme_font_size_override("font_size", Fonts.SIZE_TITLE)
 	body.add_theme_font_size_override("font_size", 27)
-	hint.add_theme_font_size_override("font_size", 18)
-	progress.add_theme_font_size_override("font_size", 18)
-	title.add_theme_font_size_override("font_size", 96)
-	subtitle.add_theme_font_size_override("font_size", 28)
+	hint.add_theme_font_size_override("font_size", Fonts.SIZE_CAPTION + 3)
+	progress.add_theme_font_size_override("font_size", Fonts.SIZE_CAPTION + 3)
+	title.add_theme_font_size_override("font_size", Fonts.SIZE_HERO)
+	subtitle.add_theme_font_size_override("font_size", Fonts.SIZE_TITLE)
 
 
 func _process(delta: float) -> void:
