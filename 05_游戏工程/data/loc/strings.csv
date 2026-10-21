@@ -1,0 +1,41 @@
+keys,zh,en
+UI_CONTINUE,继续,Continue
+UI_RESUME,继续游戏,Resume
+UI_SETTINGS,设置,Settings
+UI_SAVE,保存进度,Save
+UI_LOAD,读取进度,Load
+UI_RESTART,重开本关,Restart
+UI_QUIT,退出到标题,Quit to title
+UI_BACK,返回,Back
+UI_CLOSE,关闭,Close
+UI_YES,是,Yes
+UI_NO,否,No
+UI_PAUSED,已暂停,Paused
+UI_VOLUME_MASTER,总音量,Master
+UI_VOLUME_MUSIC,音乐,Music
+UI_VOLUME_SFX,音效,SFX
+UI_VOLUME_UI,界面,UI
+UI_VOLUME_AMBIENCE,环境,Ambience
+UI_SECTION_AUDIO,音频,Audio
+UI_SECTION_VIDEO,画面,Video
+UI_SECTION_GAMEPLAY,手感,Gameplay
+UI_SECTION_INPUT,按键,Controls
+UI_FULLSCREEN,全屏,Fullscreen
+UI_VSYNC,垂直同步,VSync
+UI_MAX_FPS,帧率上限,Frame limit
+UI_SCREEN_SHAKE,屏幕震动,Screen shake
+UI_HITSTOP,打击停顿,Hit-stop
+UI_KEYBIND,按键绑定,Key bindings
+UI_RESET_DEFAULTS,恢复默认,Reset to defaults
+UI_PRESS_KEY,按下新的键…,Press a key…
+UI_EMPTY_SLOT,空档位,Empty
+UI_SLOT,档位 %d,Slot %d
+UI_DELETE,删除,Delete
+UI_CONFIRM_DELETE,确定删除这个档位？,Delete this slot?
+UI_SAVED,已保存,Saved
+UI_LOAD_FAILED,读取失败,Load failed
+UI_SAVE_FAILED,保存失败,Save failed
+UI_NO_SAVES,还没有存档,No saves yet
+UI_LEVEL,关卡,Level
+GAME_TITLE,无缝,SEAMLESS
+PROLOGUE_TITLE,雨市,Rain Market

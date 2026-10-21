@@ -16,6 +16,7 @@ config/icon="res://icon.svg"
 
 DebugLog="*res://scripts/autoload/debug_log.gd"
 Settings="*res://scripts/autoload/settings.gd"
+Loc="*res://scripts/autoload/loc.gd"
 InputSetup="*res://scripts/autoload/input_setup.gd"
 InputRebind="*res://scripts/autoload/input_rebind.gd"
 InputBuffer="*res://scripts/autoload/input_buffer.gd"
@@ -24,6 +25,11 @@ GameEvents="*res://scripts/autoload/game_events.gd"
 LevelManager="*res://scripts/autoload/level_manager.gd"
 SaveManager="*res://scripts/autoload/save_manager.gd"
 HitStop="*res://scripts/autoload/hit_stop.gd"
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://data/loc/strings.zh.translation", "res://data/loc/strings.en.translation")
+locale/fallback="zh"
 
 [display]
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/level/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="4_hud"]
 [ext_resource type="Script" path="res://scripts/rules/game_loop.gd" id="5_rules"]
 [ext_resource type="Script" path="res://scripts/ui/enemy_label_layer.gd" id="6_labels"]
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="7_pause"]
 
 [node name="Main" type="Node2D"]
 
@@ -41,3 +42,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("4_hud")
+
+[node name="MenuLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="PauseMenu" type="Control" parent="MenuLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_pause")
