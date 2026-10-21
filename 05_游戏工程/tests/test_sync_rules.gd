@@ -8,7 +8,7 @@ extends Node
 ## 运行：godot --headless --path . res://tests/test_sync_rules.tscn
 
 const SyncRulesScript := preload("res://scripts/rules/sync_rules.gd")
-const RulesPath := "res://data/rules/sync_rules.tres"
+const RULES_PATH := "res://data/rules/sync_rules.tres"
 
 var _fail := 0
 var _total := 0
@@ -42,9 +42,9 @@ func _check(ok: bool, label: String) -> void:
 
 
 func _test_file_and_fields() -> void:
-	_check(FileAccess.file_exists(RulesPath), "sync_rules.tres 已落到 data/rules/")
+	_check(FileAccess.file_exists(RULES_PATH), "sync_rules.tres 已落到 data/rules/")
 
-	var rules: Resource = SyncRulesScript.load_from(RulesPath)
+	var rules: Resource = SyncRulesScript.load_from(RULES_PATH)
 	_check(rules != null, "规则资源可加载")
 	if rules == null:
 		return
@@ -56,7 +56,7 @@ func _test_file_and_fields() -> void:
 
 	var names: Array = SyncRulesScript.FIELD_NAMES
 	_check(names.size() == 9, "字段清单 9 项（got %d）" % names.size())
-	var text := FileAccess.get_file_as_string(RulesPath)
+	var text := FileAccess.get_file_as_string(RULES_PATH)
 	var missing := 0
 	for field_name in names:
 		if not text.contains("%s =" % field_name):
@@ -66,13 +66,13 @@ func _test_file_and_fields() -> void:
 
 func _test_apply_to_state() -> void:
 	GameState.reset()
-	var rules: Resource = SyncRulesScript.load_from(RulesPath)
+	var rules: Resource = SyncRulesScript.load_from(RULES_PATH)
 	rules.apply_to(GameState)
 	_check(GameState.MAX_SYNC == 100.0, "apply_to 注入 MAX_SYNC")
 	_check(GameState.TAKEOVER_DURATION == 8.0, "apply_to 注入 TAKEOVER_DURATION")
 
 	# 换一份规则，边界必须立刻跟着变 —— 难度调参靠这个。
-	var fast: Resource = SyncRulesScript.load_from(RulesPath)
+	var fast: Resource = SyncRulesScript.load_from(RULES_PATH)
 	fast.set("max_sync", 60.0)
 	fast.apply_to(GameState)
 	_check(GameState.MAX_SYNC == 60.0, "换规则后 MAX_SYNC 立即生效")
@@ -84,7 +84,7 @@ func _test_apply_to_state() -> void:
 
 func _test_tick_moves_sync() -> void:
 	GameState.reset()
-	var rules: Resource = SyncRulesScript.load_from(RulesPath)
+	var rules: Resource = SyncRulesScript.load_from(RULES_PATH)
 	rules.apply_to(GameState)
 
 	GameState.set_form(0)
@@ -103,7 +103,7 @@ func _test_tick_moves_sync() -> void:
 
 func _test_tick_freezes() -> void:
 	GameState.reset()
-	var rules: Resource = SyncRulesScript.load_from(RulesPath)
+	var rules: Resource = SyncRulesScript.load_from(RULES_PATH)
 	rules.apply_to(GameState)
 	GameState.set_form(0)
 	GameState.freeze_sync(2.0)
@@ -115,7 +115,7 @@ func _test_tick_freezes() -> void:
 
 func _test_takeover_counts_down() -> void:
 	GameState.reset()
-	var rules: Resource = SyncRulesScript.load_from(RulesPath)
+	var rules: Resource = SyncRulesScript.load_from(RULES_PATH)
 	rules.apply_to(GameState)
 	GameState.start_takeover()
 	_check(GameState.is_takeover, "接管已开始")

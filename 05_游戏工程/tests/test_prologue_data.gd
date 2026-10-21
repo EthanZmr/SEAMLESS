@@ -4,7 +4,7 @@ extends Node
 ## 运行：godot --headless --path . res://tests/test_prologue_data.tscn
 
 const PROLOGUE_SCENE := "res://scenes/prologue.tscn"
-const DialoguePath := "res://data/dialogue/prologue_01.json"
+const DIALOGUE_PATH := "res://data/dialogue/prologue_01.json"
 
 var _fail := 0
 var _total := 0
@@ -13,7 +13,7 @@ var _total := 0
 func _ready() -> void:
 	print("TEST_PROLOGUE_DATA: start")
 
-	_check(FileAccess.file_exists(DialoguePath), "prologue_01.json 已落到 data/dialogue/")
+	_check(FileAccess.file_exists(DIALOGUE_PATH), "prologue_01.json 已落到 data/dialogue/")
 
 	var scene := load(PROLOGUE_SCENE) as PackedScene
 	_check(scene != null, "序章场景可加载")

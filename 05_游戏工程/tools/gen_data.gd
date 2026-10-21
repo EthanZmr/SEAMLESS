@@ -71,19 +71,19 @@ func _save_frame_set() -> int:
 	var set_res: Resource = _build_frame_set()
 	var segments: Array = [set_res.light1, set_res.light2, set_res.light3]
 
-	var text := "[gd_resource type=\"Resource\" script_class=\"AttackFrameSet\" format=3]\n\n"
-	text += "[ext_resource type=\"Script\" path=\"%s\" id=\"1_frames\"]\n" % FRAMES_SCRIPT_PATH
-	text += "[ext_resource type=\"Script\" path=\"%s\" id=\"2_set\"]\n\n" % FRAME_SET_SCRIPT_PATH
+	var text := '[gd_resource type="Resource" script_class="AttackFrameSet" format=3]\n\n'
+	text += '[ext_resource type="Script" path="%s" id="1_frames"]\n' % FRAMES_SCRIPT_PATH
+	text += '[ext_resource type="Script" path="%s" id="2_set"]\n\n' % FRAME_SET_SCRIPT_PATH
 
 	for i in 3:
-		text += "[sub_resource type=\"Resource\" id=\"Resource_light%d\"]\n" % (i + 1)
-		text += "script = ExtResource(\"1_frames\")\n"
+		text += '[sub_resource type="Resource" id="Resource_light%d"]\n' % (i + 1)
+		text += 'script = ExtResource("1_frames")\n'
 		text += _dump_fields(segments[i], AttackFramesScript.FIELD_NAMES)
 		text += "\n"
 
-	text += "[resource]\nscript = ExtResource(\"2_set\")\n"
+	text += '[resource]\nscript = ExtResource("2_set")\n'
 	for i in 3:
-		text += "light%d = SubResource(\"Resource_light%d\")\n" % [i + 1, i + 1]
+		text += 'light%d = SubResource("Resource_light%d")\n' % [i + 1, i + 1]
 
 	var err := _write_text(LIGHT_FRAMES_PATH, text)
 	if err != OK:
@@ -93,9 +93,9 @@ func _save_frame_set() -> int:
 
 func _save_player_stats() -> int:
 	var stats: Resource = PlayerStatsScript.new()
-	var text := "[gd_resource type=\"Resource\" script_class=\"PlayerStats\" format=3]\n\n"
-	text += "[ext_resource type=\"Script\" path=\"%s\" id=\"1_stats\"]\n\n" % STATS_SCRIPT_PATH
-	text += "[resource]\nscript = ExtResource(\"1_stats\")\n"
+	var text := '[gd_resource type="Resource" script_class="PlayerStats" format=3]\n\n'
+	text += '[ext_resource type="Script" path="%s" id="1_stats"]\n\n' % STATS_SCRIPT_PATH
+	text += '[resource]\nscript = ExtResource("1_stats")\n'
 	text += _dump_fields(stats, PlayerStatsScript.FIELD_NAMES)
 
 	var err := _write_text(PLAYER_STATS_PATH, text)
@@ -106,15 +106,9 @@ func _save_player_stats() -> int:
 
 func _save_sync_rules() -> int:
 	var rules: Resource = SyncRulesScript.new()
-	var text := "[gd_resource type=\"Resource\" script_class=\"SyncRules\" format=3]
-
-"
-	text += "[ext_resource type=\"Script\" path=\"res://scripts/rules/sync_rules.gd\" id=\"1_rules\"]
-
-"
-	text += "[resource]
-script = ExtResource(\"1_rules\")
-"
+	var text := '[gd_resource type="Resource" script_class="SyncRules" format=3]\n\n'
+	text += '[ext_resource type="Script" path="res://scripts/rules/sync_rules.gd" id="1_rules"]\n\n'
+	text += '[resource]\nscript = ExtResource("1_rules")\n'
 	text += _dump_fields(rules, SyncRulesScript.FIELD_NAMES)
 
 	var err := _write_text(SYNC_RULES_PATH, text)

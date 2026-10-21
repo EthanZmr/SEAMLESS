@@ -1,0 +1,39 @@
+# 《无缝》gdlint 配置
+#
+# 原则：**只留能挡 bug 的规则，风格类一律关掉。**
+# lint 的价值是"在提交前发现隐患"，不是"统一审美"。以下被禁的规则都是
+# 有意为之的写法，禁掉比改代码划算：
+
+disable:
+  # 类内定义顺序固定表（signals→enums→consts→exports→vars→funcs）。
+  # 本项目按"公共 API 在前 / 私有实现在后 / 相关字段放一起"排，
+  # 强行按表排会把语义相关的字段拆散，可读性反而下降。
+  - class-definitions-order
+
+  # class 作用域的 var 必须 snake_case。
+  # 本项目刻意保留 MAX_SYNC / COMBO_DAMAGE 这类大写 var —— 它们是
+  # "本该是常量、但需要被数据文件注入"的字段（PlayerStats / SyncRules）。
+  # 大写是在代码里标出这个双重身份，比改成 snake_case 更清楚。
+  - class-variable-name
+
+  # 行长按字符数算，中文注释一个字符占两格宽度，误伤严重。
+  - max-line-length
+
+  # 单函数 return 数量上限。状态机 / 防御式早返回本来就会多 return。
+  - max-returns
+
+  # 单文件行数上限。player.gd 是单角色控制器，拆开反而打断阅读。
+  - max-file-lines
+
+  # 同一个资源被多次 load。
+  # 测试里刻意反复 load：每个用例要一个全新的场景实例，复用会把状态泄漏到下一个用例。
+  # 运行时脚本只 load 一次，所以这条规则在这里没有价值。
+  - duplicated-load
+
+# 保留默认开启的、真正能挡 bug 的规则：
+#   unused-argument / unused-variable      —— 改完代码忘删的残留
+#   shadowed-variable                      —— 遮蔽外层变量
+#   comparison-with-itself                 —— 自己跟自己比
+#   duplicate-load                         —— 重复 preload
+#   expression-not-assigned                —— 写了表达式但没赋值（多半是漏了调用）
+#   private-method-call                    —— 从外部调 _private 方法

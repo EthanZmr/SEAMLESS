@@ -1,0 +1,106 @@
+name: gate
+
+# 门禁顺序刻意如此：先 import（否则 class_name 缓存缺失会让所有测试假红），
+# 再跑测试，最后跑静态检查。测试挂了就不用看 lint。
+#
+# 导出单独成一个 job 且默认不跑：导出模板有 1.28GB，装在每个 PR 上纯属浪费。
+# 需要验证发布产物时手动触发（workflow_dispatch）。
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.7.2-stable
+  GODOT_BIN: Godot_v4.7.2-stable_linux.x86_64
+  TEMPLATE_VERSION: 4.7.2.stable
+  PROJECT_DIR: 05_游戏工程
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Godot ${{ env.GODOT_VERSION }}
+        run: |
+          set -euo pipefail
+          URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          curl -sSL -o /tmp/godot.zip "$URL"
+          unzip -q /tmp/godot.zip -d /tmp/godot_bin
+          sudo install -m 0755 "/tmp/godot_bin/${GODOT_BIN}" /usr/local/bin/godot
+          godot --version
+
+      - name: 安装 gdtoolkit
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip >/dev/null
+          python -m pip install "gdtoolkit==4.5.0"
+          gdlint --version
+
+      - name: 导入资源（重建 class_name 缓存）
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: godot --headless --path . --import
+
+      - name: 跑全部测试
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: bash tools/test_all.sh
+
+      - name: 静态检查
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: bash tools/lint.sh
+
+  export:
+    # 只在手动触发时跑：要下载 1.28GB 导出模板。
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Godot ${{ env.GODOT_VERSION }}
+        run: |
+          set -euo pipefail
+          URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          curl -sSL -o /tmp/godot.zip "$URL"
+          unzip -q /tmp/godot.zip -d /tmp/godot_bin
+          sudo install -m 0755 "/tmp/godot_bin/${GODOT_BIN}" /usr/local/bin/godot
+
+      - name: 缓存导出模板
+        id: tpl-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/${{ env.TEMPLATE_VERSION }}
+          key: godot-templates-${{ env.TEMPLATE_VERSION }}
+
+      - name: 下载导出模板
+        if: steps.tpl-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          curl -sSL -o /tmp/tpl.tpz "$URL"
+          mkdir -p "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}"
+          unzip -q /tmp/tpl.tpz -d /tmp/tpl
+          mv /tmp/tpl/templates/* "$HOME/.local/share/godot/export_templates/${TEMPLATE_VERSION}/"
+
+      - name: 导入资源
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: godot --headless --path . --import
+
+      - name: 三平台导出
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: bash tools/export_check.sh
+
+      - name: 保留产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: seamless-build
+          path: |
+            05_游戏工程/build/windows/Seamless.exe
+            05_游戏工程/build/linux/Seamless.x86_64
+            05_游戏工程/build/web/
+          retention-days: 7

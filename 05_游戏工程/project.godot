@@ -15,7 +15,9 @@ config/icon="res://icon.svg"
 [autoload]
 
 DebugLog="*res://scripts/autoload/debug_log.gd"
+Settings="*res://scripts/autoload/settings.gd"
 InputSetup="*res://scripts/autoload/input_setup.gd"
+InputRebind="*res://scripts/autoload/input_rebind.gd"
 InputBuffer="*res://scripts/autoload/input_buffer.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 GameEvents="*res://scripts/autoload/game_events.gd"

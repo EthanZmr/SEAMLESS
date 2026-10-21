@@ -30,8 +30,7 @@ func _ready() -> void:
 	legend.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 	legend.add_theme_constant_override("shadow_offset_x", 1)
 	legend.add_theme_constant_override("shadow_offset_y", 1)
-	legend.text = "清道夫  快 0.45s · 短 62px
-截线者  慢 0.68s · 长 112px"
+	legend.text = "清道夫  快 0.45s · 短 62px\n截线者  慢 0.68s · 长 112px"
 	layer.add_child(legend)
 	GameEvents.message.emit("W4-02：先往右走。看敌人头顶的前摇条——越短越快，横线越长越远。")
 

@@ -5,7 +5,7 @@ extends Node
 ## （用场景而不是 -s：Player 依赖 DebugLog 等 autoload，脚本模式下无法编译。）
 
 const PlayerStatsScript := preload("res://scripts/player/player_stats.gd")
-const StatsPath := "res://data/player/player_stats.tres"
+const STATS_PATH := "res://data/player/player_stats.tres"
 
 var _fail := 0
 var _total := 0
@@ -27,9 +27,9 @@ func _ready() -> void:
 
 
 func _test_file_exposure() -> void:
-	_check(FileAccess.file_exists(StatsPath), "player_stats.tres 已落到 data/player/")
+	_check(FileAccess.file_exists(STATS_PATH), "player_stats.tres 已落到 data/player/")
 
-	var stats: Resource = PlayerStatsScript.load_from(StatsPath)
+	var stats: Resource = PlayerStatsScript.load_from(STATS_PATH)
 	_check(stats != null, "资源可加载")
 	_check(stats.has_method("apply_to"), "资源暴露 apply_to 接口")
 	_check(stats.get("SPEED") == 220.0, "资源内含 SPEED=220.0")
@@ -52,7 +52,7 @@ func _test_overrides_player() -> void:
 	_check(probe.attack_range == 84.0, "派生运行态 attack_range 已同步")
 	_check(probe.HOOK_SPEED == 680.0, "HOOK_SPEED 取自资源")
 
-	var stats: Resource = PlayerStatsScript.load_from(StatsPath)
+	var stats: Resource = PlayerStatsScript.load_from(STATS_PATH)
 	var missing: Array = stats.missing_fields(probe)
 	_check(missing.is_empty(), "Player 没有缺失字段 %s" % str(missing))
 	probe.free()
@@ -85,7 +85,7 @@ func _test_data_is_live() -> void:
 func _test_data_file_is_complete() -> void:
 	# ResourceSaver 会省略“等于脚本默认值”的字段，直接存 player_stats.tres
 	# 就只剩 script 一行，策划打开看不到任何数值。gen_data.gd 必须全字段落盘。
-	var text := FileAccess.get_file_as_string(StatsPath)
+	var text := FileAccess.get_file_as_string(STATS_PATH)
 	var missing := PackedStringArray()
 	for field_name in PlayerStatsScript.FIELD_NAMES:
 		if not text.contains("\n%s = " % field_name):

@@ -1,0 +1,39 @@
+# 统一换行与二进制标记。
+# 为什么必须有：Windows 上 git 默认 core.autocrlf=true，会把 .gd/.tscn/.json
+# 存成 CRLF；而 Godot 的资源格式与 GDScript 解析对行尾敏感（尤其 .tscn 的
+# 多行字符串），跨平台协作时会出现"我这儿能跑"的 diff 噪音。
+* text=auto eol=lf
+
+# 明确二进制，避免 git 尝试做文本 diff/合并
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.bmp binary
+*.tga binary
+*.exr binary
+*.hdr binary
+*.svg text eol=lf
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.wav binary
+*.ogg binary
+*.mp3 binary
+*.flac binary
+*.exe binary
+*.dll binary
+*.so binary
+*.pck binary
+*.zip binary
+*.tpz binary
+*.blend binary
+*.psd binary
+*.fbx binary
+*.glb binary
+*.obj text eol=lf
+
+# Godot 生成的缓存目录（.gitignore 已忽略，这里再兜一层）
+.godot/** -text
