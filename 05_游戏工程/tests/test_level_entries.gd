@@ -14,6 +14,7 @@ func _ready() -> void:
 	await _test_arena_closes_and_opens()
 	await _test_arena_empty_never_closes()
 	await _test_arena_opens_on_death()
+	_test_split_log()
 	GameState.unlock_all_abilities()
 	if _fail == 0:
 		print("TEST_LEVEL_ENTRIES: PASS (%d assertions)" % _total)
@@ -195,3 +196,25 @@ func _test_arena_opens_on_death() -> void:
 	arena.queue_free()
 	enemy.queue_free()
 	await get_tree().process_frame
+
+
+# --- 分段计时 ---------------------------------------------------------------
+
+func _test_split_log() -> void:
+	var script := load("res://scripts/rules/split_log.gd") as GDScript
+	_check(script != null, "split_log.gd 存在")
+	if script == null:
+		return
+	var old_dir := DebugLog.log_dir
+	DebugLog.log_dir = "user://test_split_logs"
+	DebugLog.open_session()
+	var split: Node = script.new()
+	split.name = "SplitLog"
+	add_child(split)
+	GameEvents.ability_unlocked.emit("climb")
+	var text := FileAccess.get_file_as_string(DebugLog.session_path)
+	_check(text.contains("SPLIT") and text.contains("ability_unlocked") and text.contains("climb"),
+		"会话日志记下 SPLIT ability_unlocked climb")
+	split.queue_free()
+	DebugLog.close_session()
+	DebugLog.log_dir = old_dir

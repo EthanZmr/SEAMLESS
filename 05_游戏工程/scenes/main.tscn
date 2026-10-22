@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/level/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -7,11 +7,15 @@
 [ext_resource type="Script" path="res://scripts/rules/game_loop.gd" id="5_rules"]
 [ext_resource type="Script" path="res://scripts/ui/enemy_label_layer.gd" id="6_labels"]
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="7_pause"]
+[ext_resource type="Script" path="res://scripts/rules/split_log.gd" id="8_split"]
 
 [node name="Main" type="Node2D"]
 
 [node name="GameLoop" type="Node" parent="."]
 script = ExtResource("5_rules")
+
+[node name="SplitLog" type="Node" parent="."]
+script = ExtResource("8_split")
 
 [node name="Level" type="Node2D" parent="."]
 script = ExtResource("1_level")
