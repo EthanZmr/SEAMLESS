@@ -48,13 +48,13 @@ godot --path . -- --log            # 运行并把关键事件写进 user://logs/
 
 ```bash
 cd 05_游戏工程
-bash tools/test_all.sh      # 20 个无头测试套件
+bash tools/test_all.sh      # 22 个无头测试套件
 bash tools/lint.sh          # gdlint + 全量编译检查
 bash tools/export_check.sh  # 三平台导出并检查产物
 ```
 
 `test_all.sh` 会先 `--import` 重建 class cache，再按文件头自动判断每个套件该用
-`-s` 还是 `.tscn` 方式跑。当前基线：**20 个套件 0 失败**，lint 无问题，
+`-s` 还是 `.tscn` 方式跑。当前基线：**22 个套件 0 失败**，lint 无问题，
 Windows / Linux / Web 三平台导出均通过。
 
 ## 工程架构

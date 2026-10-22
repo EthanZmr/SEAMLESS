@@ -1,6 +1,6 @@
 # 《无缝》游戏工程（白盒切片）
 
-> Godot 4.7.2 · 2D · GDScript · 20 个无头测试套件
+> Godot 4.7.2 · 2D · GDScript · 22 个无头测试套件
 
 ## 运行
 
@@ -48,8 +48,8 @@ bash tools/export_check.sh             # 三平台导出并检查产物
 再按文件头判断每个套件该用 `-s` 还是 `.tscn` 方式跑。退出码 0 = 全绿；
 有失败、或一个套件都没跑起来，都返回 1。
 
-全量基线（W5）：**20 个套件 0 失败** ——
-test_attack_spec 27 / test_combo_grab 3 / test_dialogue 57 / test_fonts 21 /
+全量基线（W5）：**22 个套件 0 失败** ——
+test_attack_spec 27 / test_combo_consistency 17 / test_combo_grab 3 / test_level_authoring 14 / test_dialogue 57 / test_fonts 21 /
 test_level_save 64 / test_light1_behavior 7 / test_loc 20 / test_log 23 /
 test_menu 27 / test_player_stats 20 / test_probe 35 / test_prologue_data 8 /
 test_runner 16 / test_save_migration 34 / test_settings 30 / test_stage_cancel 7 /
@@ -86,6 +86,28 @@ godot --headless --path . -s res://tools/gen_data.gd -- --force
 
 生成器会做 round-trip 校验：写完立刻回读，字段值/类型漂移、或帧表自检不过，
 都以非 0 退出码报错，不会留下一个"看着有数据其实全是默认值"的文件。
+
+## 关卡编辑
+
+运行时只读 `data/levels/<id>.json`；关卡在编辑器里摆，摆完导出成 JSON。
+
+1. 打开 `level_src/<id>.tscn`。根节点是 `LevelAuthoring`（meta：id、名称、`east_shift`、相机边界，
+   边界画成橙框）；下面是按 JSON 键命名的分类容器（`platforms`、`climb_zones`、`hook_anchors`、
+   `enemies`、`seams`、`patches`、`checkpoints`、`boss_trigger`、`labels`）。
+2. 每个条目是一个 `LevelEntry` 节点，属于哪类看父节点名。拖动、复制粘贴到对应容器即可；
+   矩形类的 position 是左上角、大小改 `rect_size`；敌人/接缝改 `kind`。
+   编辑器里看到的都是世界坐标，`shift_east` 只决定导出时是否减去 `east_shift`。
+3. 导出：
+
+```bash
+godot --headless --path . -s res://tools/export_level.gd -- rain_market           # 写回 JSON
+godot --headless --path . -s res://tools/export_level.gd -- rain_market --check   # 只比对
+godot --headless --path . -s res://tools/level_json_to_scene.gd -- rain_market --force  # JSON → 场景（手改 JSON 后重新同步）
+```
+
+导出器按固定键序生成 JSON，"JSON → 场景 → JSON"逐字节不变。`tests/test_level_authoring.gd`
+检查编辑场景与 JSON 一致：**场景改了没导出，门禁会红**。分类名拼错、混进非 `LevelEntry` 节点、
+多个 Boss 触发点都会让导出失败，不会静默丢数据。`level_src/` 不进发布包。
 
 ## 架构分层
 
@@ -139,7 +161,7 @@ autoload 加载顺序：`DebugLog → Fonts → Settings → Loc → InputSetup 
 
 | 项 | 在哪 | 怎么用 |
 | --- | --- | --- |
-| 版本控制 | `无缝/.git` | 仓库根在 `无缝/`，策划/美术/构建一起纳管 |
+| 版本控制 | 仓库根 `.git` | 仓库根是本目录的上一级，策划/美术/构建一起纳管 |
 | CI 门禁 | `.github/workflows/gate.yml` | push/PR 跑测试 + lint；手动触发额外跑导出 |
 | 导出预设 | `export_presets.cfg` | Windows / Linux / Web 三平台，产物到 `build/` |
 | 静态检查 | `.gdlintrc` + `tools/lint.sh` | 只挡 bug 不挑风格，见下面的说明 |
@@ -225,8 +247,11 @@ data/
   loc/           界面文案 strings.csv（→ 生成的 .translation）
 assets/
   fonts/         字体槽位（ui/display/mono）+ 署名与授权说明
+level_src/       关卡编辑场景（编辑器里摆放，导出成 data/levels/*.json；不进发布包）
 tools/
   gen_data.gd    数据文件生成器（--force 覆盖）
+  export_level.gd 关卡编辑场景 → JSON（--check 只比对）
+  level_json_to_scene.gd JSON → 关卡编辑场景
   test_all.sh    门禁入口（--import + 自动判型跑全部套件）
   lint.sh        gdlint + 全量编译检查（gdlint 缺失时跳过，CI 强制跑）
   export_check.sh 三平台导出并检查产物大小
@@ -251,7 +276,7 @@ scenes/
   enemies/       敌人
   boss/          Boss
   level/         接缝/针眼/触发器
-tests/           无头测试（20 套件）
+tests/           无头测试（22 套件）
 ```
 
 ## 白盒实现范围
@@ -269,7 +294,7 @@ tests/           无头测试（20 套件）
 
 ## 已知占位
 
-- 无 TileMap/TileSet；平台由 `rain_market.json` 描述、`level.gd` 实例化。
+- 无 TileMap/TileSet；平台由 `rain_market.json` 描述、`level.gd` 实例化（JSON 由 `level_src/` 编辑场景导出）。
 - 音频总线（5 条）已建好，但**没有任何音频资源**；`AudioStreamPlayer` 还没接。
 - 存档不含敌人/Boss 状态，读档回到检查点重新开打。存档面板是 3 个手工档位，
   `SaveManager` 本身支持 1–9 槽。
