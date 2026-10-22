@@ -55,7 +55,8 @@ func add_sync(amount: float, ignore_freeze: bool = false) -> void:
 		return
 	sync = clampf(sync + amount, MIN_SYNC, MAX_SYNC)
 	GameEvents.sync_changed.emit(sync)
-	if sync >= MAX_SYNC and not is_takeover:
+	# 换人解锁前不自动接管，只有剧本直接调用 start_takeover()（01_GDD/10 §4）。
+	if sync >= MAX_SYNC and not is_takeover and has_ability("switch"):
 		start_takeover()
 
 

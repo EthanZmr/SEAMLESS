@@ -366,7 +366,7 @@ func _handle_input() -> void:
 		# 空中/挑空攻击保持旧行为：不吞键、不取消，跳跃缓冲留到落地后生效。
 		return
 
-	if InputBuffer.consume("parry", 0.12) and parry_cd <= 0.0:
+	if GameState.has_ability("parry") and InputBuffer.consume("parry", 0.12) and parry_cd <= 0.0:
 		_start_parry()
 		return
 
@@ -387,7 +387,7 @@ func _handle_input() -> void:
 				_start_ground_attack(0)
 			return
 
-	if InputBuffer.consume("dash", 0.12) and dash_cd <= 0.0 and state != State.ATTACK:
+	if GameState.has_ability("dash") and InputBuffer.consume("dash", 0.12) and dash_cd <= 0.0 and state != State.ATTACK:
 		_start_dash()
 		return
 
@@ -428,7 +428,8 @@ func _handle_input() -> void:
 	# A fresh second press during the short post-hook lock is a double jump,
 	# not a duplicate of the launch press. Do not rely on the buffer surviving
 	# the lock; fire it on the edge.
-	if hook_jump_lock > 0.0 and Input.is_action_just_pressed("jump") and double_jump_available and state != State.ATTACK:
+	var can_double := GameState.has_ability("double_jump")
+	if can_double and hook_jump_lock > 0.0 and Input.is_action_just_pressed("jump") and double_jump_available and state != State.ATTACK:
 		_consume_jump()
 		_dbg("DOUBLE_JUMP", {"source": "post_hook_lock"})
 		hook_air_charge = 0
@@ -438,7 +439,7 @@ func _handle_input() -> void:
 		state = State.JUMP
 		_shake(1.2)
 		return
-	if hook_jump_lock <= 0.0 and wall_dir != 0 and not is_on_floor() and wants_jump:
+	if GameState.has_ability("wall_jump") and hook_jump_lock <= 0.0 and wall_dir != 0 and not is_on_floor() and wants_jump:
 		_consume_jump()
 		_wall_jump(wall_dir)
 		return
@@ -451,7 +452,7 @@ func _handle_input() -> void:
 		state = State.JUMP
 		return
 
-	if wants_jump and not double_jump_available and hook_air_charge > 0 and state != State.ATTACK:
+	if can_double and wants_jump and not double_jump_available and hook_air_charge > 0 and state != State.ATTACK:
 		_consume_jump()
 		hook_air_charge = 0
 		velocity.y = DOUBLE_JUMP_VERTICAL
@@ -459,7 +460,7 @@ func _handle_input() -> void:
 		state = State.JUMP
 		_shake(1.2)
 		return
-	if wants_jump and double_jump_available and state != State.ATTACK:
+	if can_double and wants_jump and double_jump_available and state != State.ATTACK:
 		_consume_jump()
 		_dbg("DOUBLE_JUMP", {"source": "normal"})
 		hook_air_charge = 0
@@ -470,7 +471,7 @@ func _handle_input() -> void:
 		_shake(1.2)
 		return
 
-	if InputBuffer.consume("switch", 0.12) and switch_cd <= 0.0:
+	if GameState.has_ability("switch") and InputBuffer.consume("switch", 0.12) and switch_cd <= 0.0:
 		_switch_form()
 
 	if InputBuffer.consume("stitch", 0.12) and stitch_cd <= 0.0:
@@ -524,7 +525,7 @@ func _apply_horizontal(delta: float) -> void:
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y = minf(velocity.y + GRAVITY * delta, MAX_FALL)
-		if velocity.y > 0.0 and wall_dir != 0:
+		if velocity.y > 0.0 and wall_dir != 0 and GameState.has_ability("wall_jump"):
 			var x := Input.get_axis("move_left", "move_right")
 			if absf(x) > 0.2 and signf(x) == float(wall_dir):
 				state = State.WALL_SLIDE
@@ -784,7 +785,8 @@ func _on_perfect_parry() -> void:
 	_shake(8.0)
 
 	# Perfect parry is the shortest path to A-Ling: a short automatic switch.
-	if not GameState.is_takeover:
+	# 换人解锁前（01_GDD/10 §4）：完美弹反照常判定，但不换人。
+	if not GameState.is_takeover and GameState.has_ability("switch"):
 		GameState.set_form(1)
 		perfect_switch_timer = CombatMath.PERFECT_SWITCH_TIME
 
@@ -931,6 +933,8 @@ func _takeover_ai(delta: float) -> void:
 # --- W2-02 seam hook -----------------------------------------------------------
 
 func _try_start_hook() -> bool:
+	if not GameState.has_ability("hook"):
+		return false
 	if state in [State.DASH, State.ATTACK, State.PARRY, State.HURT, State.DEAD, State.CLIMB, State.LEDGE, State.HOOK]:
 		return false
 	var target := _nearest_in_group("hook_anchors", HOOK_RANGE)
@@ -1066,6 +1070,8 @@ func _has_climb_zone() -> bool:
 
 
 func _try_enter_climb() -> bool:
+	if not GameState.has_ability("climb"):
+		return false
 	if climb_jump_lock > 0.0 or not _has_climb_zone():
 		return false
 	if climb_regrab_requires_release:
@@ -1130,6 +1136,8 @@ func _ledge_update(_delta: float) -> void:
 
 
 func _check_ledge_grab() -> void:
+	if not GameState.has_ability("climb"):
+		return
 	if ledge_cd > 0.0 or is_on_floor() or velocity.y < 0.0:
 		return
 	if _try_grab_ledge():
