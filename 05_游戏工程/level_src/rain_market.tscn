@@ -1,0 +1,498 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/authoring/level_authoring.gd" id="1_jfql7"]
+[ext_resource type="Script" path="res://scripts/level/authoring/level_entry.gd" id="2_oberu"]
+
+[node name="Level" type="Node2D" unique_id=1113879618]
+script = ExtResource("1_jfql7")
+level_id = "rain_market"
+display_name = "雨市 · Rain Market (A1 slice)"
+east_shift = 2000.0
+bounds = Rect2(-220, -420, 5240, 1240)
+
+[node name="platforms" type="Node2D" parent="." unique_id=699599921]
+
+[node name="platforms_01" type="Node2D" parent="platforms" unique_id=1412691317]
+position = Vector2(-220, 620)
+script = ExtResource("2_oberu")
+rect_size = Vector2(1120, 200)
+
+[node name="platforms_02" type="Node2D" parent="platforms" unique_id=1328444867]
+position = Vector2(80, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(180, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_03" type="Node2D" parent="platforms" unique_id=2067188537]
+position = Vector2(900, 620)
+script = ExtResource("2_oberu")
+rect_size = Vector2(160, 200)
+
+[node name="platforms_04" type="Node2D" parent="platforms" unique_id=791259964]
+position = Vector2(1260, 620)
+script = ExtResource("2_oberu")
+rect_size = Vector2(160, 200)
+
+[node name="platforms_05" type="Node2D" parent="platforms" unique_id=494174474]
+position = Vector2(1500, 620)
+script = ExtResource("2_oberu")
+rect_size = Vector2(2620, 200)
+
+[node name="platforms_06" type="Node2D" parent="platforms" unique_id=1706838082]
+position = Vector2(1120, 800)
+script = ExtResource("2_oberu")
+rect_size = Vector2(380, 80)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_07" type="Node2D" parent="platforms" unique_id=879196380]
+position = Vector2(900, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(120, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_08" type="Node2D" parent="platforms" unique_id=1371560215]
+position = Vector2(1120, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(120, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_09" type="Node2D" parent="platforms" unique_id=1425526536]
+position = Vector2(1340, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(120, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_10" type="Node2D" parent="platforms" unique_id=1468274660]
+position = Vector2(820, 280)
+script = ExtResource("2_oberu")
+rect_size = Vector2(160, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_11" type="Node2D" parent="platforms" unique_id=950799568]
+position = Vector2(1200, 240)
+script = ExtResource("2_oberu")
+rect_size = Vector2(220, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_12" type="Node2D" parent="platforms" unique_id=2103695424]
+position = Vector2(1500, 280)
+script = ExtResource("2_oberu")
+rect_size = Vector2(180, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_13" type="Node2D" parent="platforms" unique_id=395218586]
+position = Vector2(1960, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(180, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_14" type="Node2D" parent="platforms" unique_id=1579397694]
+position = Vector2(2040, 240)
+script = ExtResource("2_oberu")
+rect_size = Vector2(24, 320)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_15" type="Node2D" parent="platforms" unique_id=1827898591]
+position = Vector2(2160, 240)
+script = ExtResource("2_oberu")
+rect_size = Vector2(24, 320)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_16" type="Node2D" parent="platforms" unique_id=1613993359]
+position = Vector2(2040, 220)
+script = ExtResource("2_oberu")
+rect_size = Vector2(360, 18)
+color = Color(0.105882354, 0.23137255, 0.3137255, 1)
+
+[node name="platforms_17" type="Node2D" parent="platforms" unique_id=1497629015]
+position = Vector2(-240, 180)
+script = ExtResource("2_oberu")
+rect_size = Vector2(50, 640)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_18" type="Node2D" parent="platforms" unique_id=473640027]
+position = Vector2(4680, 180)
+script = ExtResource("2_oberu")
+rect_size = Vector2(50, 640)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_19" type="Node2D" parent="platforms" unique_id=1575024542]
+position = Vector2(2760, 470)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(140, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_20" type="Node2D" parent="platforms" unique_id=1618929751]
+position = Vector2(3040, 500)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(230, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_21" type="Node2D" parent="platforms" unique_id=590427740]
+position = Vector2(3400, 400)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(170, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_22" type="Node2D" parent="platforms" unique_id=1156301489]
+position = Vector2(3700, 500)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(240, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_23" type="Node2D" parent="platforms" unique_id=834049688]
+position = Vector2(4030, 410)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(190, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_24" type="Node2D" parent="platforms" unique_id=1187492798]
+position = Vector2(4300, 500)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(230, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_25" type="Node2D" parent="platforms" unique_id=84037181]
+position = Vector2(2560, 120)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(32, 420)
+color = Color(0.08627451, 0.14901961, 0.23921569, 1)
+
+[node name="platforms_26" type="Node2D" parent="platforms" unique_id=1892482050]
+position = Vector2(2540, 80)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(220, 20)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_27" type="Node2D" parent="platforms" unique_id=1319684322]
+position = Vector2(2820, 320)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(24, 220)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_28" type="Node2D" parent="platforms" unique_id=878411461]
+position = Vector2(2940, 320)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(24, 220)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_29" type="Node2D" parent="platforms" unique_id=994707338]
+position = Vector2(2860, 280)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(280, 20)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_30" type="Node2D" parent="platforms" unique_id=628034382]
+position = Vector2(3180, 240)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(24, 320)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_31" type="Node2D" parent="platforms" unique_id=2096011826]
+position = Vector2(3320, 240)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(24, 320)
+color = Color(0.08235294, 0.14117648, 0.22745098, 1)
+
+[node name="platforms_32" type="Node2D" parent="platforms" unique_id=1661867036]
+position = Vector2(3120, 220)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(80, 20)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_33" type="Node2D" parent="platforms" unique_id=2015947222]
+position = Vector2(3320, 220)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(80, 20)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_34" type="Node2D" parent="platforms" unique_id=213958999]
+position = Vector2(3120, 90)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(300, 18)
+color = Color(0.105882354, 0.23137255, 0.3137255, 1)
+
+[node name="climb_zones" type="Node2D" parent="." unique_id=1047586008]
+
+[node name="climb_zones_01" type="Node2D" parent="climb_zones" unique_id=1216153433]
+position = Vector2(160, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 180)
+
+[node name="climb_zones_02" type="Node2D" parent="climb_zones" unique_id=887401250]
+position = Vector2(920, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 180)
+
+[node name="climb_zones_03" type="Node2D" parent="climb_zones" unique_id=1769544787]
+position = Vector2(960, 280)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 160)
+
+[node name="climb_zones_04" type="Node2D" parent="climb_zones" unique_id=168357426]
+position = Vector2(1360, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 180)
+
+[node name="climb_zones_05" type="Node2D" parent="climb_zones" unique_id=2106549624]
+position = Vector2(1488, 620)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 180)
+
+[node name="climb_zones_06" type="Node2D" parent="climb_zones" unique_id=1793999858]
+position = Vector2(2000, 440)
+script = ExtResource("2_oberu")
+rect_size = Vector2(26, 180)
+
+[node name="climb_zones_07" type="Node2D" parent="climb_zones" unique_id=505932047]
+position = Vector2(2592, 170)
+script = ExtResource("2_oberu")
+shift_east = true
+rect_size = Vector2(26, 330)
+has_tint = true
+tint = Color(0.247, 0.878, 0.815, 0.12)
+
+[node name="hook_anchors" type="Node2D" parent="." unique_id=468475501]
+
+[node name="hook_anchors_01" type="Node2D" parent="hook_anchors" unique_id=459347245]
+position = Vector2(1200, 210)
+script = ExtResource("2_oberu")
+
+[node name="hook_anchors_02" type="Node2D" parent="hook_anchors" unique_id=1501600011]
+position = Vector2(2900, 170)
+script = ExtResource("2_oberu")
+shift_east = true
+
+[node name="hook_anchors_03" type="Node2D" parent="hook_anchors" unique_id=1981494356]
+position = Vector2(3320, 70)
+script = ExtResource("2_oberu")
+shift_east = true
+
+[node name="enemies" type="Node2D" parent="." unique_id=353611385]
+
+[node name="enemies_01" type="Node2D" parent="enemies" unique_id=737441138]
+position = Vector2(360, 560)
+script = ExtResource("2_oberu")
+kind = "sweeper"
+
+[node name="enemies_02" type="Node2D" parent="enemies" unique_id=1032184326]
+position = Vector2(820, 560)
+script = ExtResource("2_oberu")
+kind = "sweeper"
+
+[node name="enemies_03" type="Node2D" parent="enemies" unique_id=453595647]
+position = Vector2(1380, 560)
+script = ExtResource("2_oberu")
+kind = "sweeper"
+
+[node name="enemies_04" type="Node2D" parent="enemies" unique_id=1915227851]
+position = Vector2(1280, 220)
+script = ExtResource("2_oberu")
+kind = "sweeper"
+
+[node name="enemies_05" type="Node2D" parent="enemies" unique_id=1324588933]
+position = Vector2(2250, 200)
+script = ExtResource("2_oberu")
+kind = "sweeper"
+
+[node name="enemies_06" type="Node2D" parent="enemies" unique_id=1828486860]
+position = Vector2(2960, 560)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "sweeper"
+
+[node name="enemies_07" type="Node2D" parent="enemies" unique_id=664512672]
+position = Vector2(3360, 200)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "sweeper"
+
+[node name="enemies_08" type="Node2D" parent="enemies" unique_id=1527803522]
+position = Vector2(3830, 440)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "sweeper"
+
+[node name="enemies_09" type="Node2D" parent="enemies" unique_id=563839217]
+position = Vector2(1300, 560)
+script = ExtResource("2_oberu")
+kind = "lancer"
+
+[node name="enemies_10" type="Node2D" parent="enemies" unique_id=1242227783]
+position = Vector2(1900, 560)
+script = ExtResource("2_oberu")
+kind = "lancer"
+
+[node name="enemies_11" type="Node2D" parent="enemies" unique_id=67664830]
+position = Vector2(3120, 560)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "lancer"
+
+[node name="seams" type="Node2D" parent="." unique_id=1427999064]
+
+[node name="seams_01" type="Node2D" parent="seams" unique_id=334971875]
+position = Vector2(1010, 560)
+script = ExtResource("2_oberu")
+kind = "bridge"
+
+[node name="seams_02" type="Node2D" parent="seams" unique_id=1212973071]
+position = Vector2(1300, 240)
+script = ExtResource("2_oberu")
+kind = "bridge"
+
+[node name="seams_03" type="Node2D" parent="seams" unique_id=2037043577]
+position = Vector2(3040, 450)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "short"
+
+[node name="seams_04" type="Node2D" parent="seams" unique_id=1819093153]
+position = Vector2(3380, 70)
+script = ExtResource("2_oberu")
+shift_east = true
+kind = "power"
+
+[node name="patches" type="Node2D" parent="." unique_id=938616592]
+
+[node name="patches_01" type="Node2D" parent="patches" unique_id=598745877]
+position = Vector2(1300, 780)
+script = ExtResource("2_oberu")
+
+[node name="patches_02" type="Node2D" parent="patches" unique_id=469567257]
+position = Vector2(3180, 470)
+script = ExtResource("2_oberu")
+shift_east = true
+
+[node name="checkpoints" type="Node2D" parent="." unique_id=86649450]
+
+[node name="checkpoints_01" type="Node2D" parent="checkpoints" unique_id=581803802]
+position = Vector2(120, 560)
+script = ExtResource("2_oberu")
+
+[node name="checkpoints_02" type="Node2D" parent="checkpoints" unique_id=23821191]
+position = Vector2(900, 560)
+script = ExtResource("2_oberu")
+
+[node name="checkpoints_03" type="Node2D" parent="checkpoints" unique_id=1950247019]
+position = Vector2(1600, 560)
+script = ExtResource("2_oberu")
+
+[node name="checkpoints_04" type="Node2D" parent="checkpoints" unique_id=2018713225]
+position = Vector2(2320, 560)
+script = ExtResource("2_oberu")
+
+[node name="checkpoints_05" type="Node2D" parent="checkpoints" unique_id=1759252619]
+position = Vector2(3720, 560)
+script = ExtResource("2_oberu")
+shift_east = true
+
+[node name="boss_trigger" type="Node2D" parent="." unique_id=628364997]
+
+[node name="boss_trigger_01" type="Node2D" parent="boss_trigger" unique_id=759371743]
+position = Vector2(4140, 540)
+script = ExtResource("2_oberu")
+shift_east = true
+boss_spawn = Vector2(4580, 520)
+
+[node name="labels" type="Node2D" parent="." unique_id=110595707]
+
+[node name="labels_01" type="Node2D" parent="labels" unique_id=2106830675]
+position = Vector2(30, 520)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "A1 · 诊所后巷"
+font_size = 20
+
+[node name="labels_02" type="Node2D" parent="labels" unique_id=2115843857]
+position = Vector2(650, 360)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "A2 · 吊桥市场"
+font_size = 20
+
+[node name="labels_03" type="Node2D" parent="labels" unique_id=1558933850]
+position = Vector2(1850, 520)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "A3 · 天台栈道"
+font_size = 20
+
+[node name="labels_04" type="Node2D" parent="labels" unique_id=1258912289]
+position = Vector2(2500, 450)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "B · 雨市入口"
+font_size = 20
+
+[node name="labels_05" type="Node2D" parent="labels" unique_id=725471341]
+position = Vector2(3240, 460)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "C · 霓虹巷"
+font_size = 20
+
+[node name="labels_06" type="Node2D" parent="labels" unique_id=572273474]
+position = Vector2(3820, 400)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "D · 磁轨站"
+font_size = 20
+
+[node name="labels_07" type="Node2D" parent="labels" unique_id=1473376656]
+position = Vector2(4440, 440)
+script = ExtResource("2_oberu")
+kind = "zone"
+text = "F · 裁断广场"
+font_size = 20
+
+[node name="labels_08" type="Node2D" parent="labels" unique_id=306483007]
+position = Vector2(40, 600)
+script = ExtResource("2_oberu")
+kind = "hint"
+text = "A：街面 / 雨棚 / 屋顶 / 排水沟；掉下去不是死，是另一条路"
+font_size = 12
+
+[node name="labels_09" type="Node2D" parent="labels" unique_id=15805699]
+position = Vector2(820, 200)
+script = ExtResource("2_oberu")
+kind = "hint"
+text = "A2 高路：左屋顶 H 钩索 → 广告牌 U 高缝 → 右屋顶"
+font_size = 12
+
+[node name="labels_10" type="Node2D" parent="labels" unique_id=717995091]
+position = Vector2(1120, 760)
+script = ExtResource("2_oberu")
+kind = "hint"
+text = "A2 排水沟：补丁 + 回到东侧"
+font_size = 11
+
+[node name="labels_11" type="Node2D" parent="labels" unique_id=1223537887]
+position = Vector2(1850, 200)
+script = ExtResource("2_oberu")
+kind = "hint"
+text = "A3 天台：绿梯 → 墙跳井 → 栈桥 → B"
+font_size = 12
+
+[node name="labels_12" type="Node2D" parent="labels" unique_id=1835480374]
+position = Vector2(2500, 600)
+script = ExtResource("2_oberu")
+kind = "hint"
+text = "B 高路线：绿色梯缝 W 攀爬 → 钩索；墙跳任意墙面"
+font_size = 12

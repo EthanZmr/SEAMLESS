@@ -3,7 +3,8 @@ extends Node2D
 ##
 ## 几何、敌人、缝、检查点、补丁、Boss 触发点全部来自
 ## `data/levels/rain_market.json`；本脚本只负责"怎么画"（碰撞体 + 多边形），
-## 不再负责"画在哪"。改关卡布局改 JSON，不用碰代码。
+## 不再负责"画在哪"。改关卡布局：在编辑器里改 `level_src/<id>.tscn`，
+## 再跑 `tools/export_level.gd` 导出 JSON，不用碰代码。
 ##
 ## A1 layout (W6-01):
 ##   A 0-900: safehouse -> first fight -> 260px gap + bridge seam -> second
