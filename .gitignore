@@ -31,3 +31,6 @@ logs/
 
 # --- 生成的存档（本地测试残留）---
 saves/
+
+# --- 设计讨论草稿（brainstorm 可视化）---
+.superpowers/
