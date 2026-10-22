@@ -14,6 +14,7 @@ func _ready() -> void:
 	await _test_arena_closes_and_opens()
 	await _test_arena_empty_never_closes()
 	await _test_arena_opens_on_death()
+	await _test_arena_never_traps_outside()
 	_test_split_log()
 	GameState.unlock_all_abilities()
 	if _fail == 0:
@@ -220,3 +221,33 @@ func _test_split_log() -> void:
 	split.queue_free()
 	DebugLog.close_session()
 	DebugLog.log_dir = old_dir
+
+
+## 审查 C1：门不能和玩家重叠，也不能把玩家关在门外。用真玩家（有碰撞）。
+func _test_arena_never_traps_outside() -> void:
+	GameState.reset()
+	var arena := _make_arena("a4")
+	var floor_body := StaticBody2D.new()
+	floor_body.name = "ArenaFloor"
+	var fs := CollisionShape2D.new()
+	var fr := RectangleShape2D.new()
+	fr.size = Vector2(1400, 40)
+	fs.shape = fr
+	floor_body.add_child(fs)
+	floor_body.position = Vector2(300, 320)
+	add_child(floor_body)
+	var enemy := _make_sweeper(Vector2(450, 250))
+	var player := (load("res://scenes/player/player.tscn") as PackedScene).instantiate()
+	player.position = Vector2(12, 272)
+	add_child(player)
+	await _frames(4)
+	_check(not _closed(arena), "玩家只探进边缘（中心离门 < 门宽+16）：不关门")
+	player.global_position = Vector2(300, 272)
+	await _frames(4)
+	_check(_closed(arena), "玩家进到里面：关门")
+	player.global_position = Vector2(-60, 272)
+	await _frames(3)
+	_check(not _closed(arena), "门关着但玩家在外面：开门，不把人关在外面")
+	for n in [arena, enemy, player, floor_body]:
+		n.queue_free()
+	await get_tree().process_frame

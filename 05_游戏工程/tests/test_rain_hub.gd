@@ -14,7 +14,10 @@ func _ready() -> void:
 	if parsed is Dictionary:
 		_test_structure(parsed)
 		_test_hook_gap(parsed)
+		_test_no_world_hole(parsed)
+		_test_hints(parsed)
 	_check(LevelManager.level_ids().size() > 0 and LevelManager.level_ids()[0] == "rain_hub", "第一关是 rain_hub")
+	await _test_fall_out_dies()
 	if _fail == 0:
 		print("TEST_RAIN_HUB: PASS (%d assertions)" % _total)
 	else:
@@ -69,3 +72,48 @@ func _test_hook_gap(d: Dictionary) -> void:
 		if right > x0 + 1.0 and left < x1 - 1.0 and absf(top - gap_y) < 300.0:
 			blocked = true
 	_check(not blocked, "缺口内没有可借力的平台")
+
+
+## 审查 C2：升降梯底端西侧那块不能是空的（x 1860–2016、y 800–1400 要有墙挡住）。
+func _test_no_world_hole(d: Dictionary) -> void:
+	var walled := false
+	for p in d.get("platforms", []):
+		var r: Array = p["rect"]
+		if float(r[0]) <= 1900.0 and float(r[0]) + float(r[2]) >= 1860.0 \
+				and float(r[1]) <= 800.0 and float(r[1]) + float(r[3]) >= 1400.0:
+			walled = true
+	_check(walled, "排水沟西墙从 y 800 起封住，升降梯底端西侧不漏")
+
+
+func _hint_near(d: Dictionary, rect: Rect2) -> bool:
+	for l in d.get("labels", []):
+		if l.get("kind") == "hint" and rect.has_point(Vector2(float(l["pos"][0]), float(l["pos"][1]))):
+			return true
+	return false
+
+
+## 审查 I2/I3：升降梯开关、两处长掉落都有提示。
+func _test_hints(d: Dictionary) -> void:
+	_check(_hint_near(d, Rect2(1900, 1300, 500, 250)), "升降梯开关旁有提示")
+	_check(_hint_near(d, Rect2(4100, 400, 400, 250)), "中庭 → 排水沟的井口有下视提示")
+	_check(_hint_near(d, Rect2(7200, 1100, 500, 250)), "排水沟上层 → 下层的井口有下视提示")
+
+
+## 审查 C2：掉出关卡边界以下就断线，不会永远往下掉。
+func _test_fall_out_dies() -> void:
+	var prev: String = LevelManager.current_id
+	LevelManager.current_id = "rain_hub"
+	GameState.reset()
+	var main: Node = (load("res://scenes/main.tscn") as PackedScene).instantiate()
+	add_child(main)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var player: Node2D = main.get_node("Player")
+	player.global_position = Vector2(1500, 2300)
+	for i in range(10):
+		await get_tree().physics_frame
+	_check(GameState.integrity <= 0.0 or player.get("state") == Player.State.DEAD, "掉出边界以下：断线")
+	main.queue_free()
+	await get_tree().process_frame
+	LevelManager.current_id = prev
+	GameState.reset()

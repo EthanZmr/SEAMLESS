@@ -1114,7 +1114,7 @@ func _climb_update(_delta: float) -> void:
 		return
 	var y_axis := Input.get_axis("move_up", "move_down")
 	velocity = Vector2(0.0, y_axis * CLIMB_SPEED)
-	if InputBuffer.consume("dash", 0.12):
+	if GameState.has_ability("dash") and InputBuffer.consume("dash", 0.12):
 		_start_dash()
 		return
 	if is_on_floor() and Input.is_action_just_pressed("move_down"):

@@ -24,6 +24,7 @@ func _ready() -> void:
 	await _test_locked_dash_parry_switch()
 	_test_sync_no_auto_takeover()
 	await _test_unlocked_climb()
+	await _test_climb_no_dash_without_part()
 	GameState.unlock_all_abilities()
 	if _fail == 0:
 		print("TEST_ABILITIES: PASS (%d assertions)" % _total)
@@ -241,4 +242,23 @@ func _test_unlocked_climb() -> void:
 	Input.action_press("move_up")
 	await _frames(4)
 	_check(p.state == Player.State.CLIMB, "解锁攀爬后：攀爬区按上进 CLIMB")
+	await _cleanup(ctx)
+
+
+## 审查 I1：有攀爬、没冲刺时，攀爬中按冲刺不能冲出去。
+func _test_climb_no_dash_without_part() -> void:
+	GameState.begin_new_game()
+	GameState.unlock_ability("climb")
+	var ctx := await _spawn()
+	var p: Player = ctx["player"]
+	p.global_position = Vector2(406, 560)
+	p.velocity = Vector2.ZERO
+	p.state = Player.State.FALL
+	await get_tree().physics_frame
+	Input.action_press("move_up")
+	await _frames(4)
+	InputBuffer.clear()
+	_stamp("dash")
+	await _frames(2)
+	_check(p.state != Player.State.DASH, "未解锁冲刺：攀爬中按冲刺不进 DASH")
 	await _cleanup(ctx)

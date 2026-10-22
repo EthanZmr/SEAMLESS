@@ -3,30 +3,21 @@ extends Node2D
 ## 战斗锁门（01_GDD/10 §3）：玩家进入 rect 且里面有活着的敌人 → 两侧关门；
 ## rect 内敌人全灭 → 开门并记下 "arena:<id>"，之后永不再关。
 ## 玩家断线时开门；人离开 rect 后才会再次触发，复活后可以重打。
+## 只有玩家中心进到离门 DOOR_W+16 以内才关门（门永不和玩家重叠）；
+## 门关着而玩家中心不在 rect 内时立即开门，保证不会把人关在门外。
 
 const DOOR_W := 24.0
+const DOOR_CLEAR := DOOR_W + 16.0
 
 @export var arena_id := ""
 @export var rect := Rect2()
 
 var _closed := false
 var _armed := true
-var _trigger: Area2D
 var _doors: Array[CollisionShape2D] = []
 
 
 func _ready() -> void:
-	_trigger = Area2D.new()
-	_trigger.name = "Trigger"
-	_trigger.collision_layer = 0
-	_trigger.collision_mask = 2
-	_trigger.position = rect.get_center()
-	var shape := CollisionShape2D.new()
-	var r := RectangleShape2D.new()
-	r.size = rect.size
-	shape.shape = r
-	_trigger.add_child(shape)
-	add_child(_trigger)
 	for side in ["DoorL", "DoorR"]:
 		var door := StaticBody2D.new()
 		door.name = side
@@ -50,16 +41,19 @@ func _cleared() -> bool:
 	return GameState.has_flag("arena:" + arena_id)
 
 
-func _player_inside() -> bool:
-	for body in _trigger.get_overlapping_bodies():
-		if body.is_in_group("player"):
-			return true
-	return false
+func _world_rect() -> Rect2:
+	return Rect2(global_position + rect.position, rect.size)
+
+
+## 玩家中心；没有玩家时返回 null。
+func _player_center() -> Variant:
+	var p := get_tree().get_first_node_in_group("player") as Node2D
+	return p.global_position if p else null
 
 
 func _alive_inside() -> int:
 	var n := 0
-	var world_rect := Rect2(global_position + rect.position, rect.size)
+	var world_rect := _world_rect()
 	for e in get_tree().get_nodes_in_group("enemies"):
 		if e is EnemyBase and not e.is_dead() and world_rect.has_point(e.global_position):
 			n += 1
@@ -70,12 +64,16 @@ func _physics_process(_delta: float) -> void:
 	if _cleared():
 		_set_closed(false)
 		return
-	var inside := _player_inside()
+	var c: Variant = _player_center()
+	var inside := c != null and _world_rect().has_point(c)
+	var deep := c != null and _world_rect().grow_individual(-DOOR_CLEAR, 0, -DOOR_CLEAR, 0).has_point(c)
 	if not inside:
 		_armed = true
 	if not _closed:
-		if inside and _armed and _alive_inside() > 0:
+		if deep and _armed and _alive_inside() > 0:
 			_set_closed(true)
+	elif not inside:
+		_set_closed(false)
 	elif _alive_inside() == 0:
 		_set_closed(false)
 		GameState.set_flag("arena:" + arena_id)

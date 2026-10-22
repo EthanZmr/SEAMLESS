@@ -89,6 +89,12 @@ func _load_data() -> bool:
 	return true
 
 
+## 兜底：掉出关卡下边界 200 以下就断线，白盒漏了墙也不会永远往下掉。
+func _physics_process(_delta: float) -> void:
+	if player and GameState.integrity > 0.0 and player.global_position.y > LEVEL_BOTTOM + 200.0:
+		GameState.damage(GameState.MAX_INTEGRITY)
+
+
 func _vec_of(a: Variant) -> Vector2:
 	var arr: Array = a
 	return Vector2(float(arr[0]), float(arr[1]))
