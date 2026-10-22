@@ -13,6 +13,7 @@ extends Node2D
 
 const SWEEPER_SCENE := preload("res://scenes/enemies/sweeper.tscn")
 const LANCER_SCENE := preload("res://scenes/enemies/lancer.tscn")
+const CRAWLER_SCENE := preload("res://scenes/enemies/crawler.tscn")
 const TRIMMER_SCENE := preload("res://scenes/boss/trimmer.tscn")
 const SEAM_SCENE := preload("res://scenes/level/seam.tscn")
 const CHECKPOINT_SCENE := preload("res://scenes/level/checkpoint.tscn")
@@ -237,24 +238,41 @@ func _add_label(text: String, pos: Vector2, font_size: int = 15) -> void:
 func _spawn_enemies() -> void:
 	for entry in _entries("enemies"):
 		var pos := _pos_of(entry)
-		if entry.get("kind", "sweeper") == "lancer":
-			_add_lancer(pos)
-		else:
-			_add_enemy(pos)
+		var enemy: EnemyBase
+		match String(entry.get("kind", "sweeper")):
+			"lancer":
+				enemy = _add_lancer(pos)
+			"crawler":
+				enemy = _add_crawler(pos, entry)
+			_:
+				enemy = _add_enemy(pos)
+		enemy.drops_part = String(entry.get("drops", ""))
 
 
-func _add_enemy(pos: Vector2, group_name := "") -> void:
+func _add_crawler(pos: Vector2, entry: Dictionary) -> EnemyBase:
+	var crawler := CRAWLER_SCENE.instantiate()
+	crawler.surface = String(entry.get("surface", "floor"))
+	crawler.point_a = pos
+	crawler.point_b = _pos_of(entry, "pos_b") if entry.has("pos_b") else pos
+	crawler.position = pos
+	add_child(crawler)
+	return crawler
+
+
+func _add_enemy(pos: Vector2, group_name := "") -> EnemyBase:
 	var enemy := SWEEPER_SCENE.instantiate()
 	enemy.position = pos
 	if not group_name.is_empty():
 		enemy.add_to_group(group_name)
 	add_child(enemy)
+	return enemy
 
 
-func _add_lancer(pos: Vector2) -> void:
+func _add_lancer(pos: Vector2) -> EnemyBase:
 	var enemy := LANCER_SCENE.instantiate()
 	enemy.position = pos
 	add_child(enemy)
+	return enemy
 
 
 func _spawn_seams() -> void:

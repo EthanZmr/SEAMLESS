@@ -29,6 +29,8 @@ enum State { IDLE, PATROL, CHASE, WINDUP, RECOVER, STAGGER, DEAD }
 @export var reach_label := "短"
 ## 训练假人：有物理和受击反馈，但永不追击、永不出手。
 @export var passive := false
+## 死亡时掉落的零件 id（01_GDD/10 §4）；空 = 不掉。
+@export var drops_part := ""
 
 # --- 运行时 -------------------------------------------------------------------
 var hp := 0.0
@@ -175,10 +177,20 @@ func die() -> void:
 	collision_mask = 0
 	velocity = Vector2.ZERO
 	GameEvents.message.emit("缝住了。")
+	_drop_part()
 	var tween := create_tween()
 	tween.tween_property(self, "modulate", Color(0.3, 0.3, 0.35, 0.0), 0.35)
 	tween.tween_callback(queue_free)
 
+
+
+func _drop_part() -> void:
+	if drops_part.is_empty() or get_parent() == null:
+		return
+	var part: Node2D = (load("res://scenes/level/part_pickup.tscn") as PackedScene).instantiate()
+	part.set("part_id", drops_part)
+	part.position = position
+	get_parent().add_child.call_deferred(part)
 
 # --- 供 HUD / 标签层读取（不暴露内部节点） -------------------------------------
 
