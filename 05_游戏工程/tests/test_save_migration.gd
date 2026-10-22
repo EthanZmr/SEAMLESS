@@ -23,6 +23,7 @@ func _ready() -> void:
 	_test_newer_version_rejected()
 	_test_unknown_legacy_version()
 	_test_missing_state_survives()
+	_test_legacy_state_keeps_all_abilities()
 	_test_batch_queries()
 
 	# 收尾
@@ -96,6 +97,25 @@ func _test_legacy_save_upgrades() -> void:
 	_check(is_equal_approx(GameState.integrity, 41.0), "迁移后 integrity 恢复（got %.1f）" % GameState.integrity)
 	_check(GameState.form == 1, "迁移后 form 恢复")
 	_check(not SaveManager.needs_migration(SAVE_SLOT), "读完后不再需要迁移")
+
+
+# --- 能力系统之前的存档：全部能力视为已解锁 ---------------------------------
+
+func _test_legacy_state_keeps_all_abilities() -> void:
+	SaveManager.delete_slot(SAVE_SLOT)
+	_check(_write_raw(SAVE_SLOT, {
+		"version": SaveManager.SAVE_VERSION,
+		"level": "rain_market",
+		"level_name": "雨市",
+		"state": {"version": 2, "sync": 30.0, "integrity": 100.0, "form": 0},
+	}), "写入一份 state v2（无 abilities 字段）的存档")
+	GameState.begin_new_game()
+	_check(SaveManager.load_slot(SAVE_SLOT), "state v2 存档能读")
+	var all_on := true
+	for id in GameState.ABILITIES:
+		all_on = all_on and GameState.has_ability(id)
+	_check(all_on, "旧档读入后全部能力已解锁")
+	SaveManager.delete_slot(SAVE_SLOT)
 
 
 # --- 迁移后必须回写 ----------------------------------------------------------

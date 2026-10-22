@@ -25,6 +25,26 @@ var sync_frozen := 0.0
 var checkpoint := Vector2.ZERO
 var flags: Dictionary = {}
 
+## 能力解锁（01_GDD/10 §4）。初始值为全部解锁：测试、原型场景直接可用；
+## 只有新游戏（序章结束进入雨市）调用 begin_new_game() 清空。
+const ABILITIES := ["climb", "parry", "hook", "wall_jump", "double_jump", "dash", "switch"]
+## 零件 → 它解锁的能力。换人不是零件，由剧情点解锁。
+const PARTS := {
+	"claw": ["climb"],
+	"buffer": ["parry"],
+	"launcher": ["hook"],
+	"spring": ["wall_jump"],
+	"valve": ["double_jump", "dash"],
+}
+const PART_NAMES := {
+	"claw": "攀爬爪",
+	"buffer": "缓冲片",
+	"launcher": "纤维发射器",
+	"spring": "腿部弹簧",
+	"valve": "气阀",
+}
+var abilities: Dictionary = _all_abilities()
+
 
 # --- 状态变更（不变量在这里，速率在 SyncRules） ---------------------------------
 
@@ -120,12 +140,60 @@ func reset() -> void:
 	_emit_snapshot()
 
 
+# --- 能力 --------------------------------------------------------------------
+
+static func _all_abilities() -> Dictionary:
+	var d := {}
+	for id in ABILITIES:
+		d[id] = true
+	return d
+
+
+func has_ability(id: String) -> bool:
+	return abilities.has(id)
+
+
+## 新解锁返回 true；已有或未知能力返回 false。
+func unlock_ability(id: String) -> bool:
+	if not id in ABILITIES:
+		push_error("GameState: 未知能力 %s" % id)
+		return false
+	if abilities.has(id):
+		return false
+	abilities[id] = true
+	GameEvents.ability_unlocked.emit(id)
+	return true
+
+
+## 安装零件：解锁它对应的全部能力；任一新解锁即返回 true。
+func install_part(part_id: String) -> bool:
+	if not PARTS.has(part_id):
+		push_error("GameState: 未知零件 %s" % part_id)
+		return false
+	var any := false
+	for id in PARTS[part_id]:
+		if unlock_ability(id):
+			any = true
+	return any
+
+
+func unlock_all_abilities() -> void:
+	abilities = _all_abilities()
+
+
+## 新游戏：没有能力、没有剧情标记，其余状态回到初值。
+func begin_new_game() -> void:
+	abilities = {}
+	flags = {}
+	reset()
+
+
 # --- 序列化：存档边界在这里 ---------------------------------------------------
 
 ## 状态结构版本，和 SaveManager.SAVE_VERSION（文件格式版本）是两层东西。
 ## 这里的数字只在**字段含义变了**（不是加字段——加字段有 from_dict 的
 ## 逐字段兜底）时才 += 1，用于诊断"这个档的 state 是哪一代结构"。
-const STATE_VERSION := 2
+const STATE_VERSION := 3
 
 ## 完整快照。包含 takeover_timer / sync_frozen 这类过程量，
 ## 所以"接管第 4 秒存档"读回来仍然是接管第 4 秒。
@@ -140,6 +208,7 @@ func to_dict() -> Dictionary:
 		"sync_frozen": sync_frozen,
 		"checkpoint": [checkpoint.x, checkpoint.y],
 		"flags": flags.duplicate(true),
+		"abilities": ABILITIES.filter(func(id): return abilities.has(id)),
 	}
 
 
@@ -166,6 +235,15 @@ func from_dict(data: Dictionary) -> void:
 	var f: Variant = data.get("flags", null)
 	if f is Dictionary:
 		flags = (f as Dictionary).duplicate(true)
+	# v3 起才有 abilities；旧档没有这个字段 = 能力系统之前的存档，视为全部解锁。
+	var ab: Variant = data.get("abilities", null)
+	if ab is Array:
+		abilities = {}
+		for id in ab:
+			if String(id) in ABILITIES:
+				abilities[String(id)] = true
+	else:
+		abilities = _all_abilities()
 	GameEvents.sync_changed.emit(sync)
 	GameEvents.integrity_changed.emit(integrity)
 	GameEvents.form_changed.emit(form)

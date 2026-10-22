@@ -140,7 +140,7 @@ func _test_serialization_roundtrip() -> void:
 	GameState.checkpoint = Vector2(1234, 567)
 
 	var snap := GameState.to_dict()
-	_check(snap.get("version") == 2, "快照带版本号 2")
+	_check(snap.get("version") == 3, "快照带版本号 3")
 	_check(snap.has("takeover_timer"), "快照包含 takeover_timer（旧版漏了这个字段）")
 	_check(snap.has("flags"), "快照包含 flags")
 
