@@ -122,11 +122,16 @@ func reset() -> void:
 
 # --- 序列化：存档边界在这里 ---------------------------------------------------
 
+## 状态结构版本，和 SaveManager.SAVE_VERSION（文件格式版本）是两层东西。
+## 这里的数字只在**字段含义变了**（不是加字段——加字段有 from_dict 的
+## 逐字段兜底）时才 += 1，用于诊断"这个档的 state 是哪一代结构"。
+const STATE_VERSION := 2
+
 ## 完整快照。包含 takeover_timer / sync_frozen 这类过程量，
 ## 所以"接管第 4 秒存档"读回来仍然是接管第 4 秒。
 func to_dict() -> Dictionary:
 	return {
-		"version": 2,
+		"version": STATE_VERSION,
 		"sync": sync,
 		"integrity": integrity,
 		"form": form,
@@ -139,9 +144,16 @@ func to_dict() -> Dictionary:
 
 
 ## 从快照还原。缺失字段用当前值兜底，不认识的字段忽略。
+## state 的结构版本比当前新时只警告不拒绝 —— 字段缺失已有兜底，
+## 拒绝会让"更新版本保存、退回旧版本读"变成不可用；文件级版本由
+## SaveManager 把关（那边版本过新是硬拒）。
 func from_dict(data: Dictionary) -> void:
 	if data.is_empty():
 		return
+	var state_ver := int(data.get("version", STATE_VERSION))
+	if state_ver > STATE_VERSION:
+		push_warning("GameState: 快照结构版本 %d 高于当前 %d，缺失字段按默认值处理"
+			% [state_ver, STATE_VERSION])
 	sync = float(data.get("sync", sync))
 	integrity = float(data.get("integrity", integrity))
 	form = int(data.get("form", form))

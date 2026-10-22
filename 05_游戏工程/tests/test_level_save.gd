@@ -145,7 +145,7 @@ func _test_save_rejects_bad_version() -> void:
 	GameState.reset()
 	GameState.add_sync(7.0)
 	var before := GameState.sync
-	_check(not SaveManager.load_slot(SAVE_SLOT), "版本不匹配的存档被拒绝")
+	_check(not SaveManager.load_slot(SAVE_SLOT), "版本过新的存档被拒绝（不降级读）")
 	_check(is_equal_approx(GameState.sync, before), "拒绝时没有污染 GameState")
 	SaveManager.delete_slot(SAVE_SLOT)
 

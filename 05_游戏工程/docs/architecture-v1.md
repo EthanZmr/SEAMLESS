@@ -43,6 +43,19 @@
 3. **改架构必须先补测试再改。** `GameState` 原来的 `_process` 每帧推进**没有任何测试覆盖**，
    拆层时如果不先写 `test_sync_rules`，改坏了也不会有人知道。
 
+### 0.6 审计后的第二刀（W5）
+
+W5 做了一次架构审计，结论是**纵向分层已经干净**（autoload 反向依赖实体 0 处、
+UI 引用 Player 类型 0 处、数据层依赖表现层 0 处、`change_scene_to_file` 只在
+`level_manager.gd`），欠账集中在横向切分与存档演进：
+
+| 项 | 状态 | 实际落点 | 判断依据 |
+| --- | --- | --- | --- |
+| `player.gd` 纯查询外提 | ✅ | `player/movement_probe.gd`、`player/attack_probe.gd`（全 `static`，只吃 `World2D` + 坐标） | 这些函数原本就**不依赖任何玩家状态**，留在 1255 行的 `player.gd` 里既读不动也测不了。外提后 `tests/test_probe.tscn` 能自造 `StaticBody2D` 直接验证"薄平台侧面不算墙""翻转朝向后攻击盒跟着翻"这类边界。`player.gd` 1255 → 1202 行，但收益不在行数：空间查询现在有了独立契约。 |
+| 存档版本链 | ✅ | `save_manager.gd::_migration_steps()/_migrate()/_v0_to_v1()` | 原来 `ver != SAVE_VERSION` 直接 `return false`，等于**每次加字段都让玩家存档作废**。改成逐级迁移 + 立刻回写，只有"来自更新版本"才硬拒。同时把 `GameState.to_dict()` 里的魔数 `2` 提成 `STATE_VERSION`，明确"文件格式版本"与"状态结构版本"是两层。 |
+| `player.gd` 拆四组件 | ⛔ 不做 | —— | 移动/战斗/攀爬/钩索共享 `coyote`/`jump_buffer`/`attack_cd`/`state` 一堆互相影响的计时器。拆开后每调一次手感要跨 3 个文件对时间轴，而手感调试是这个项目最高频的操作。等第二个可控角色出现再拆 —— 那时才知道哪些该共享。 |
+| 实体自绘 `_draw` 外提 | ⏸ 等美术 | —— | 白盒阶段"几何即原型"是对的。接美术时必然换成 Sprite/AnimationPlayer，那时再拆 `PlayerVisual` 子节点；现在拆等于给占位图形写架构。 |
+
 第 7 节"分期路线"与第 8 节"触发信号表"保留原样 —— 它们描述的是**后续**该怎么走，
 不是这次的施工单。
 

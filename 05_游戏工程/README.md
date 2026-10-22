@@ -48,12 +48,12 @@ bash tools/export_check.sh             # 三平台导出并检查产物
 再按文件头判断每个套件该用 `-s` 还是 `.tscn` 方式跑。退出码 0 = 全绿；
 有失败、或一个套件都没跑起来，都返回 1。
 
-全量基线（W5）：**18 个套件 0 失败** ——
+全量基线（W5）：**20 个套件 0 失败** ——
 test_attack_spec 27 / test_combo_grab 3 / test_dialogue 57 / test_fonts 21 /
 test_level_save 64 / test_light1_behavior 7 / test_loc 20 / test_log 23 /
-test_menu 27 / test_player_stats 20 / test_prologue_data 8 / test_runner 16 /
-test_settings 30 / test_stage_cancel 7 / test_sync_rules 39 /
-test_scene / test_movement / hook_sweep。
+test_menu 27 / test_player_stats 20 / test_probe 35 / test_prologue_data 8 /
+test_runner 16 / test_save_migration 34 / test_settings 30 / test_stage_cancel 7 /
+test_sync_rules 39 / test_scene / test_movement / hook_sweep。
 
 新加套件不用注册：脚本扫 `tests/*.gd`，按文件头判型。
 
@@ -111,14 +111,21 @@ autoload 加载顺序：`DebugLog → Fonts → Settings → Loc → InputSetup 
 - **时间缩放用栈，不直接写 `Engine.time_scale`。** 并行触发的慢动作彼此独立，
   谁结束都不能把别人的效果抹掉（`hit_stop.gd::push_scale/pop_scale`）。
 - **命中判定走物理查询**（`intersect_shape`，mask 4），但保留原来的偏移筛选，
-  所以手感与语义不变，只是不再全场景遍历。刻意没加遮挡 raycast —— 当前关卡没有
-  可穿透薄墙，加了只会改手感。
+  所以手感与语义不变，只是不再全场景遍历。查询本体在 `player/attack_probe.gd`
+  （全 static，不认识 Player），`player.gd` 只负责喂位置/朝向/攻击距离。
+  刻意没加遮挡 raycast —— 当前关卡没有可穿透薄墙，加了只会改手感。
+- **空间查询与实体行为分开。** `MovementProbe`（有没有地/有没有墙/能不能抓边沿）
+  与 `AttackProbe`（谁在攻击盒里/谁最近）只吃 `World2D` + 坐标，不持有节点、
+  不写状态，因此可以脱离 `main.tscn` 用自造的 StaticBody2D 单测
+  （`tests/test_probe.tscn`）。玩家保留的只有"读状态 → 决定转哪个 State"的部分。
 - **敌人标签集中到一层画。** 敌人只实现 `label_text/label_anchor/label_alpha/label_tint`
   四个方法，`enemy_label_layer.gd` 每 0.1 秒扫一遍统一绘制，不再每个敌人挂 Label 节点。
 - **敌人分三层**：`EnemyBase`（骨架：重力/受击/死亡/闪白/标签契约）→
   `MeleeChaser`（近战 AI：巡逻/追击/前摇/攻击/恢复）→ `Sweeper`/`Lancer`
   （只留数值覆盖）。Boss 不继承，因为它有阶段与技能表，差异大于共性。
 - **存档原子写**：先写 `.tmp` 再 rename，不会留下写了一半的存档。
+- **存档走版本链，不是版本校验。** 旧档按 `_migration_steps()` 逐级升上来并立刻
+  回写；只有"来自更新版本"才硬拒。加字段不会让玩家存档作废。
 - **对白分三层**：`DialogueScript`（纯函数解析/校验）→ `DialoguePlayer`（推进器，
   发 `line_changed`/`finished`，不碰 UI）→ `DialogueBox`（可复用对话框）。
   序章共用数据层但保留自己的舞台节奏，因为它是演出不是对话。
@@ -199,6 +206,13 @@ fallback 会**绕过默认值表**，永远返回 fallback，测试里断言默�
 `quit()` 不执行，CI 会卡到超时。所以逻辑全部收进 `_run() -> int`，由
 `_init()` / `_initialize()` 统一 `quit(code)`。
 
+**9. 存档存在两层版本号，混用会让迁移写错层。** `SaveManager.SAVE_VERSION`
+是**文件格式**版本（payload 的顶层结构），`GameState.STATE_VERSION` 是**状态结构**
+版本（`state` 里面的字段含义）。加字段只需动对应那一层；两层都动就会让
+"只加了一个字段"变成"所有旧存档走一遍不必要的迁移链"。文件格式版本过新时
+必须硬拒（来自更新版本的游戏，降级读会静默丢数据）；状态结构版本过新只警告
+（字段缺失已有逐字段兜底）。
+
 ## 目录
 
 ```
@@ -224,6 +238,7 @@ scripts/
   combat/        弹反帧数据（纯函数，可单测）+ 帧表 Resource
   dialogue/      DialogueScript（数据层）、DialoguePlayer（推进器）
   player/        阿针/阿绫控制器 + PlayerStats 资源
+                 + MovementProbe / AttackProbe（只读空间查询，全 static）
   enemies/       EnemyBase / MeleeChaser / Sweeper / Lancer
   boss/          裁断者
   level/         关卡解释器（读 rain_market.json）、接缝、针眼、Boss 触发器
@@ -236,7 +251,7 @@ scenes/
   enemies/       敌人
   boss/          Boss
   level/         接缝/针眼/触发器
-tests/           无头测试（18 套件）
+tests/           无头测试（20 套件）
 ```
 
 ## 白盒实现范围

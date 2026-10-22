@@ -629,53 +629,21 @@ func _start_air_attack() -> void:
 	velocity.y = minf(velocity.y, -40.0)
 	velocity.x = facing * 70.0
 
-## 敌人所在的物理层（sweeper/lancer/trimmer 都是 layer 4）。
-## 命中判定用物理查询而不是遍历 group：只有真正处在可及空间的敌人才会被打到。
-const ENEMY_MASK := 4
-
-## 用圆形物理查询取附近的敌人。比 get_nodes_in_group("enemies") 尊重碰撞层，
-## 且返回的是"当前可及"的集合（已死/已 queue_free 的不会在里面）。
-func _enemies_in_radius(radius: float) -> Array[Node]:
-	if not is_inside_tree():
-		return []
-	var shape := CircleShape2D.new()
-	shape.radius = maxf(radius, 1.0)
-	var params := PhysicsShapeQueryParameters2D.new()
-	params.shape = shape
-	params.transform = Transform2D(0.0, global_position)
-	params.collide_with_bodies = true
-	params.collide_with_areas = false
-	params.collision_mask = ENEMY_MASK
-	return _collect_enemies(get_world_2d().direct_space_state.intersect_shape(params, 32))
-
-## 身前攻击盒。宽 = attack_range，高 = 2*half_height，中心在身前半臂长处。
+## 身前的敌人。查询本体在 AttackProbe（无状态、可单测），这里只负责把
+## 玩家当前的位置、朝向、攻击距离喂给探测层。
 func _enemies_in_attack_box(half_height: float) -> Array[Node]:
 	if not is_inside_tree():
 		return []
-	var width := maxf(attack_range, 8.0)
-	var shape := RectangleShape2D.new()
-	shape.size = Vector2(width, maxf(half_height, 1.0) * 2.0)
-	var params := PhysicsShapeQueryParameters2D.new()
-	params.shape = shape
-	params.transform = Transform2D(0.0, global_position + Vector2(facing * width * 0.5, 0.0))
-	params.collide_with_bodies = true
-	params.collide_with_areas = false
-	params.collision_mask = ENEMY_MASK
-	return _collect_enemies(get_world_2d().direct_space_state.intersect_shape(params, 16))
+	return AttackProbe.enemies_in_attack_box(
+		get_world_2d(), global_position, facing, attack_range, half_height
+	)
 
-## 物理查询的 collider 去重（一个敌人可能有多个 shape）。
-func _collect_enemies(hits: Array[Dictionary]) -> Array[Node]:
-	var out: Array[Node] = []
-	for hit in hits:
-		var collider: Variant = hit.get("collider")
-		if not (collider is Node):
-			continue
-		var node := collider as Node
-		if not node.is_in_group("enemies"):
-			continue
-		if not out.has(node):
-			out.append(node)
-	return out
+
+## 半径内的敌人。震退、最近的敌人等"不按攻击盒算"的场景用这个。
+func _enemies_in_radius(radius: float) -> Array[Node]:
+	if not is_inside_tree():
+		return []
+	return AttackProbe.enemies_in_radius(get_world_2d(), global_position, radius)
 
 
 func _do_attack_hit() -> void:
@@ -882,17 +850,11 @@ func _nearest_in_group(group: String, max_dist: float) -> Node:
 	return best
 
 ## 最近的可及敌人。用物理半径查询，不会把墙那边的敌人算进来。
+## 选取口径（活着的、距离最近的）在 AttackProbe 里，这里只给世界与原点。
 func _nearest_enemy(max_dist: float) -> Node:
-	var best: Node = null
-	var best_dist := max_dist
-	for enemy in _enemies_in_radius(max_dist):
-		if enemy.get("hp") == null or enemy.get("hp") <= 0:
-			continue
-		var d: float = global_position.distance_to(enemy.global_position)
-		if d < best_dist:
-			best_dist = d
-			best = enemy
-	return best
+	if not is_inside_tree():
+		return null
+	return AttackProbe.nearest_alive(get_world_2d(), global_position, max_dist)
 
 func _take_damage(amount: float, source: Variant) -> void:
 	if invuln > 0.0 or state == State.DEAD:
@@ -1177,23 +1139,18 @@ func _check_ledge_grab() -> void:
 
 
 func _try_grab_ledge() -> bool:
-	var dir := facing
-	var wall_point := global_position + Vector2(dir * LEDGE_PROBE_FORWARD, 0.0)
-	if not _is_solid_at(wall_point):
-		return false
-	var above := wall_point + Vector2(0.0, -LEDGE_PROBE_ABOVE)
-	var below := wall_point + Vector2(0.0, LEDGE_PROBE_BELOW)
-	return not _is_solid_at(above) and _is_solid_at(below)
+	return MovementProbe.can_grab_ledge(
+		get_world_2d(),
+		global_position,
+		facing,
+		LEDGE_PROBE_FORWARD,
+		LEDGE_PROBE_ABOVE,
+		LEDGE_PROBE_BELOW
+	)
 
 
 func _wall_dir() -> int:
-	# A climbable wall must be solid at the body's side AND below that point.
-	# This keeps thin platform sides from counting as walls.
-	for dir in [facing, -facing, 1, -1]:
-		var side := global_position + Vector2(dir * 18.0, 0.0)
-		if _is_solid_at(side) and _is_solid_at(side + Vector2(0.0, 24.0)):
-			return int(dir)
-	return 0
+	return MovementProbe.wall_dir(get_world_2d(), global_position, facing)
 
 
 func _wall_jump(dir: int) -> void:
@@ -1205,16 +1162,6 @@ func _wall_jump(dir: int) -> void:
 	wall_jump_lock = WALL_JUMP_LOCK
 	InputBuffer.clear_action("jump")
 	_shake(1.5)
-
-
-func _is_solid_at(point: Vector2) -> bool:
-	var params := PhysicsPointQueryParameters2D.new()
-	params.position = point
-	params.collision_mask = 1
-	params.collide_with_areas = false
-	params.collide_with_bodies = true
-	var hits := get_world_2d().direct_space_state.intersect_point(params, 1)
-	return not hits.is_empty()
 
 
 func _update_visuals() -> void:
