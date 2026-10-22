@@ -9,7 +9,7 @@
     "next": "W6-01 A v5 真人 3–4 分钟",
     "week": "W06",
     "weeks": 32,
-    "updated": "2026-10-21",
+    "updated": "2026-10-22",
     "build": "05_游戏工程",
     "rating": "M",
     "team": "1 人",
@@ -19,17 +19,17 @@
   },
   "kpis": [
     {
-      "value": 169,
-      "suffix": "",
-      "label": "测试断言",
-      "hint": "89 移动 + 63 集成 + 17 逻辑",
+      "value": 22,
+      "suffix": " / 22",
+      "label": "测试套件",
+      "hint": "全绿 · 614 条断言",
       "tone": "cyan"
     },
     {
-      "value": 1,
-      "suffix": " / 6",
+      "value": 2,
+      "suffix": " / 8",
       "label": "里程碑",
-      "hint": "M0 白盒完成",
+      "hint": "M0–M1 完成，M2 进行中",
       "tone": "amber"
     },
     {
@@ -132,7 +132,7 @@
     ]
   },
   "tests": {
-    "total": 169,
+    "total": 614,
     "logic": {
       "pass": 17,
       "total": 17,
@@ -233,12 +233,12 @@
     {
       "id": "D5",
       "text": "美术：霓虹剪影 + shader",
-      "why": "单人可完成，先可读后好看"
+      "why": "单人可完成，先可读后好看；2026-10-21 美术方向改为手绘赛璐璐，本条已被取代"
     },
     {
       "id": "D6",
       "text": "输入先用 autoload 注册",
-      "why": "降低 project.godot 手写风险"
+      "why": "降低 project.godot 手写风险；2026-10-22 由 D12 取代"
     },
     {
       "id": "D7",
@@ -264,6 +264,16 @@
       "id": "D11",
       "text": "A1：25–30 分钟 / 32 周",
       "why": "全质量美术/音频；A–C 10–12，D–F 13–18；680h 净容量、140h 缓冲。"
+    },
+    {
+      "id": "D12",
+      "text": "输入动作保持代码注册，不迁回 InputMap",
+      "why": "InputRebind 已是键位唯一真相（ADR-011）"
+    },
+    {
+      "id": "D13",
+      "text": "战斗判定由帧表驱动，动画只跟随",
+      "why": "手感一处真相；headless 门禁接美术后仍有效（ADR-012）"
     }
   ],
   "loop": [
@@ -390,6 +400,36 @@
   },
   "changelog": [
     {
+      "date": "2026-10-22",
+      "type": "BOARD",
+      "tag": "BOARD",
+      "text": "本地看板 v2：单文件 HTML（09_项目看板/local/index.html），双击即开，不依赖 Remotion 运行时；数据仍以 project.json 为准，node scripts/build-local.mjs 写入。"
+    },
+    {
+      "date": "2026-10-22",
+      "type": "ARCH",
+      "tag": "ARCH",
+      "text": "架构优化：顿帧/终结技 punch 改读帧表；新增连招数值一致性测试；attack_kind 改 enum；关卡改在编辑器摆放（level_src/ + export_level.gd，导出逐字节一致）；ADR-011/012 采纳；22 套件全绿、gdlint 通过。"
+    },
+    {
+      "date": "2026-10-22",
+      "type": "W5-04",
+      "tag": "COMBAT",
+      "text": "D2 取消规则统一：三段命中才开窗、空挥全禁；窗口按段取（5–8f / 6–9f / 13–17f）；三段取消只买机动、不退 0.30s 冷却。"
+    },
+    {
+      "date": "2026-10-22",
+      "type": "W5-03",
+      "tag": "COMBAT",
+      "text": "二段「拽」落地：LIGHT2 13f / 5f 判定 / 105ms，拉到 28px 停；LIGHT3 18f / 6f / 160ms；攻击语言改「刺→拽→打结」。"
+    },
+    {
+      "date": "2026-10-22",
+      "type": "W5-02",
+      "tag": "COMBAT",
+      "text": "轻击第一段定稿：attack_spec.gd 帧表 SOT；空挥不可跳不可连段，命中后 5–8f 跳取消、9f 起连段。"
+    },
+    {
       "date": "2026-10-21",
       "type": "W6-01",
       "tag": "VERT",
@@ -488,5 +528,161 @@
     "A 首次 3–4 分钟",
     "A1 屋顶 / A2 三路线 / A3 墙跳井",
     "W6-01 真人验收"
+  ],
+  "suites": [
+    {
+      "name": "test_movement",
+      "count": 89,
+      "unit": "断言",
+      "note": "移动 / 攀爬 / 钩索 / 连击",
+      "pass": true
+    },
+    {
+      "name": "test_scene",
+      "count": 66,
+      "unit": "断言",
+      "note": "雨市集成",
+      "pass": true
+    },
+    {
+      "name": "test_level_save",
+      "count": 64,
+      "unit": "断言",
+      "note": "关卡切换 / 存档",
+      "pass": true
+    },
+    {
+      "name": "test_dialogue",
+      "count": 57,
+      "unit": "断言",
+      "note": "对白数据 / 推进",
+      "pass": true
+    },
+    {
+      "name": "test_sync_rules",
+      "count": 39,
+      "unit": "断言",
+      "note": "同步率规则",
+      "pass": true
+    },
+    {
+      "name": "test_probe",
+      "count": 35,
+      "unit": "断言",
+      "note": "空间查询",
+      "pass": true
+    },
+    {
+      "name": "test_save_migration",
+      "count": 34,
+      "unit": "断言",
+      "note": "存档版本链",
+      "pass": true
+    },
+    {
+      "name": "test_settings",
+      "count": 30,
+      "unit": "断言",
+      "note": "设置",
+      "pass": true
+    },
+    {
+      "name": "test_attack_spec",
+      "count": 27,
+      "unit": "断言",
+      "note": "轻击帧表",
+      "pass": true
+    },
+    {
+      "name": "test_menu",
+      "count": 27,
+      "unit": "断言",
+      "note": "暂停 / 菜单",
+      "pass": true
+    },
+    {
+      "name": "test_log",
+      "count": 23,
+      "unit": "断言",
+      "note": "会话日志",
+      "pass": true
+    },
+    {
+      "name": "test_fonts",
+      "count": 21,
+      "unit": "断言",
+      "note": "字体槽位",
+      "pass": true
+    },
+    {
+      "name": "test_loc",
+      "count": 20,
+      "unit": "断言",
+      "note": "本地化",
+      "pass": true
+    },
+    {
+      "name": "test_player_stats",
+      "count": 20,
+      "unit": "断言",
+      "note": "玩家数值",
+      "pass": true
+    },
+    {
+      "name": "test_combo_consistency",
+      "count": 17,
+      "unit": "断言",
+      "note": "连招两份数据对齐",
+      "pass": true
+    },
+    {
+      "name": "test_runner",
+      "count": 16,
+      "unit": "断言",
+      "note": "纯逻辑",
+      "pass": true
+    },
+    {
+      "name": "test_level_authoring",
+      "count": 14,
+      "unit": "断言",
+      "note": "关卡编辑场景 ↔ JSON",
+      "pass": true
+    },
+    {
+      "name": "test_prologue_data",
+      "count": 8,
+      "unit": "断言",
+      "note": "序章数据",
+      "pass": true
+    },
+    {
+      "name": "test_light1_behavior",
+      "count": 7,
+      "unit": "断言",
+      "note": "轻击一段行为",
+      "pass": true
+    },
+    {
+      "name": "test_stage_cancel",
+      "count": 7,
+      "unit": "用例",
+      "note": "三段取消规则",
+      "pass": true
+    },
+    {
+      "name": "test_combo_grab",
+      "count": 3,
+      "unit": "用例",
+      "note": "二段拽",
+      "pass": true
+    },
+    {
+      "name": "hook_sweep",
+      "count": 0,
+      "unit": "扫描",
+      "note": "钩索参数扫描",
+      "pass": true
+    }
   ]
 }

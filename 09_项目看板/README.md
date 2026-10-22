@@ -1,5 +1,18 @@
 # 无缝 SEAMLESS · 项目看板
 
+## 本地看板 v2（推荐）
+
+`local/index.html` 是零依赖的单文件看板，双击即开，不需要 Remotion 运行时、npm 或服务器。
+数据仍来自 `src/data/project.json`，构建脚本只把 JSON 写进页面里的 `<script id="project-data">` 数据块：
+
+```bash
+node 09_项目看板/scripts/build-local.mjs
+```
+
+页面结构、样式、动效都在 `local/index.html` 里，直接改即可。动效：进度带从 W0 缝到当前周、指标数字滚动、测试条与风险点依次出现、背景雨；系统开启「减少动态效果」时全部关闭。
+
+## Remotion 版 v1.2
+
 《无缝》垂直切片（序章 + 雨市 + 裁断者）的项目控制台。  
 一个**无需服务器、无需联网、双击即开**的静态 HTML：外壳是项目数据面板，中央四章是**页面内实时渲染的 DOM 动效**，不是视频。
 
