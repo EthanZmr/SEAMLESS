@@ -2,6 +2,7 @@ class_name Lift
 extends AnimatableBody2D
 ## 升降梯捷径（01_GDD/10 §3）：在 stop_a 端按交互激活一次（存进剧情标记），
 ## 之后站上去 0.3 秒驶向另一端；人在某一端而平台不在那里时，平台驶来。
+## 未激活时平台停在 stop_b：把远端井口盖住，玩家不能从远端掉进来绕过路线。
 
 const PLATFORM := Vector2(96, 16)
 const RIDE_DELAY := 0.3
@@ -23,8 +24,8 @@ var _calls: Array[Area2D] = []
 
 func _ready() -> void:
 	sync_to_physics = false
-	position = stop_a
 	active = GameState.has_flag(_flag())
+	position = stop_a if active else stop_b
 	var shape := CollisionShape2D.new()
 	shape.name = "Collision"
 	var rect := RectangleShape2D.new()
@@ -80,6 +81,7 @@ func _physics_process(delta: float) -> void:
 			active = true
 			GameState.set_flag(_flag())
 			GameEvents.message.emit("升降梯：通了。")
+			_go(stop_a)
 		return
 	if _moving:
 		position = position.move_toward(_target, speed * delta)

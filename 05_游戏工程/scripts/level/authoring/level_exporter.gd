@@ -57,6 +57,9 @@ static func dict_to_scene(data: Dictionary) -> Node2D:
 	var top := float(bounds.get("top", 0.0))
 	root.bounds = Rect2(left, top,
 		float(bounds.get("right", left)) - left, float(bounds.get("bottom", top)) - top)
+	if meta.has("spawn"):
+		root.has_spawn = true
+		root.spawn = _vec(meta["spawn"])
 	var shift := Vector2(root.east_shift, 0.0)
 
 	for cat in CATEGORIES:
@@ -136,6 +139,9 @@ static func scene_to_dict(root: Node, errors: Array = []) -> Dictionary:
 			},
 		},
 	}
+	if root.get("has_spawn"):
+		var sp: Vector2 = root.get("spawn")
+		data["meta"]["spawn"] = [_num(sp.x), _num(sp.y)]
 	var known := {}
 	for cat in CATEGORIES:
 		known[cat[0]] = cat[1]

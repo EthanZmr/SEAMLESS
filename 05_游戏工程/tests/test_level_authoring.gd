@@ -103,7 +103,8 @@ func _check_structure_errors() -> void:
 func _check_new_categories_roundtrip() -> void:
 	var data := {
 		"meta": {"id": "t", "display_name": "t", "east_shift": 0.0,
-			"bounds": {"left": 0.0, "right": 100.0, "top": 0.0, "bottom": 100.0}},
+			"bounds": {"left": 0.0, "right": 100.0, "top": 0.0, "bottom": 100.0},
+			"spawn": [160.0, 572.0]},
 		"enemies": [{"kind": "crawler", "pos": [10.0, 20.0], "shift": "none",
 			"pos_b": [90.0, 20.0], "surface": "ceiling", "drops": "claw"}],
 		"parts": [{"kind": "claw", "pos": [5.0, 6.0], "shift": "none"}],
@@ -125,6 +126,7 @@ func _check_new_categories_roundtrip() -> void:
 	_check(once.get("parts", [{}])[0].get("kind") == "claw", "parts 保留 kind")
 	_check(once.get("lifts", [{}])[0].get("pos_b") == [0.0, -320.0], "lifts 保留 pos_b")
 	_check(once.get("arenas", [{}])[0].get("kind") == "a1", "arenas 保留 kind")
+	_check(once["meta"].get("spawn") == [160.0, 572.0], "meta.spawn 保留")
 
 
 func _check(condition: bool, label: String) -> void:

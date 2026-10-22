@@ -11,6 +11,9 @@ extends Node2D
 @export var east_shift := 0.0
 ## 对应 meta.bounds（left/top/right/bottom），相机限位用。
 @export var bounds := Rect2()
+## 玩家出生点（世界坐标，JSON meta.spawn）；没有时沿用 main.tscn 里玩家的位置。
+@export var has_spawn := false
+@export var spawn := Vector2.ZERO
 
 
 func _process(_delta: float) -> void:
@@ -21,3 +24,5 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if Engine.is_editor_hint():
 		draw_rect(bounds, Color(1, 0.6, 0.1, 0.8), false, 2.0)
+		if has_spawn:
+			draw_circle(spawn, 12.0, Color(0.25, 1.0, 0.85, 0.8))

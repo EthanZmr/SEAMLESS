@@ -78,7 +78,7 @@ func _test_part_pickup() -> void:
 	await get_tree().process_frame
 
 
-## 升降梯：未激活不动；激活（flag）后站上去 0.3 秒驶向另一端。
+## 升降梯：未激活时停在 stop_b 不动（开关在 stop_a 端）；激活（flag）后从 stop_a 出发，站上去 0.3 秒驶向另一端。
 func _make_lift(id: String) -> Node:
 	var scene := load("res://scenes/level/lift.tscn") as PackedScene
 	if scene == null:
@@ -97,9 +97,11 @@ func _test_lift() -> void:
 	_check(lift != null, "lift.tscn 存在")
 	if lift == null:
 		return
-	var body := _make_player(Vector2(0, -36))
+	await get_tree().physics_frame
+	_check(absf(lift.global_position.y - (-320.0)) < 0.5, "未激活的升降梯停在 stop_b（盖住远端井口）")
+	var body := _make_player(Vector2(0, -356))
 	await get_tree().create_timer(1.0).timeout
-	_check(absf(lift.global_position.y) < 0.5, "未激活的升降梯站上去不动")
+	_check(absf(lift.global_position.y - (-320.0)) < 0.5, "未激活的升降梯站上去不动")
 	lift.queue_free()
 	body.queue_free()
 	await get_tree().process_frame

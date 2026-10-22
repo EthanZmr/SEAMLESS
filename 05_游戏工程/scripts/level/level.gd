@@ -41,6 +41,9 @@ var LEVEL_BOTTOM := 820.0
 func _ready() -> void:
 	_load_data()
 	player = get_parent().get_node_or_null("Player") as Player
+	var meta: Dictionary = data.get("meta", {})
+	if meta.has("spawn") and player:
+		player.global_position = _vec_of(meta["spawn"])
 	_build_background()
 	_build_geometry()
 	_spawn_enemies()
@@ -84,6 +87,11 @@ func _load_data() -> bool:
 	LEVEL_TOP = float(bounds.get("top", LEVEL_TOP))
 	LEVEL_BOTTOM = float(bounds.get("bottom", LEVEL_BOTTOM))
 	return true
+
+
+func _vec_of(a: Variant) -> Vector2:
+	var arr: Array = a
+	return Vector2(float(arr[0]), float(arr[1]))
 
 
 func _entries(key: String) -> Array:
@@ -161,6 +169,8 @@ func _build_geometry() -> void:
 	for entry in _entries("labels"):
 		var text := String(entry.get("text", ""))
 		var pos := _pos_of(entry)
+		if entry.get("kind", "hint") == "gap_marker":
+			continue  # 测试用的缺口标记（tests/test_rain_hub），游戏里不显示
 		if entry.get("kind", "hint") == "zone":
 			_add_zone_label(text, pos)
 		else:
