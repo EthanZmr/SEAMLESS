@@ -11,6 +11,9 @@ var _total := 0
 func _ready() -> void:
 	await _test_part_pickup()
 	await _test_lift()
+	await _test_arena_closes_and_opens()
+	await _test_arena_empty_never_closes()
+	await _test_arena_opens_on_death()
 	GameState.unlock_all_abilities()
 	if _fail == 0:
 		print("TEST_LEVEL_ENTRIES: PASS (%d assertions)" % _total)
@@ -111,4 +114,84 @@ func _test_lift() -> void:
 	_check(reached, "激活后站上去 2.8 秒内到达另一端（%.1fs）" % t)
 	lift.queue_free()
 	body.queue_free()
+	await get_tree().process_frame
+
+
+# --- 战斗锁门 ---------------------------------------------------------------
+
+func _make_arena(id: String) -> Node2D:
+	var script := load("res://scripts/level/arena_gate.gd") as GDScript
+	if script == null:
+		return null
+	var arena: Node2D = script.new()
+	arena.name = "Arena_" + id
+	arena.set("arena_id", id)
+	arena.set("rect", Rect2(0, 0, 600, 300))
+	add_child(arena)
+	return arena
+
+
+func _make_sweeper(at: Vector2) -> Node:
+	var e := (load("res://scenes/enemies/sweeper.tscn") as PackedScene).instantiate()
+	e.position = at
+	add_child(e)
+	e.set_physics_process(false)
+	return e
+
+
+func _closed(arena: Node2D) -> bool:
+	var l := arena.get_node_or_null("DoorL/Collision") as CollisionShape2D
+	var r := arena.get_node_or_null("DoorR/Collision") as CollisionShape2D
+	return l != null and r != null and not l.disabled and not r.disabled
+
+
+func _test_arena_closes_and_opens() -> void:
+	GameState.begin_new_game()
+	var arena := _make_arena("a1")
+	_check(arena != null, "arena_gate.gd 存在")
+	if arena == null:
+		return
+	var enemy := _make_sweeper(Vector2(450, 250))
+	await _frames(2)
+	_check(not _closed(arena), "玩家进来之前门是开的")
+	var body := _make_player(Vector2(300, 150))
+	await _frames(4)
+	_check(_closed(arena), "玩家进入且有活敌人：关门")
+	enemy.die()
+	await _frames(4)
+	_check(not _closed(arena), "敌人全灭：开门")
+	_check(GameState.has_flag("arena:a1"), "清场后记下 arena:a1")
+	arena.queue_free()
+	body.queue_free()
+	await get_tree().process_frame
+
+
+func _test_arena_empty_never_closes() -> void:
+	GameState.begin_new_game()
+	var arena := _make_arena("a2")
+	if arena == null:
+		return
+	var body := _make_player(Vector2(300, 150))
+	await _frames(4)
+	_check(not _closed(arena), "锁门里没有敌人：不关门")
+	arena.queue_free()
+	body.queue_free()
+	await get_tree().process_frame
+
+
+func _test_arena_opens_on_death() -> void:
+	GameState.begin_new_game()
+	var arena := _make_arena("a3")
+	if arena == null:
+		return
+	var enemy := _make_sweeper(Vector2(450, 250))
+	var body := _make_player(Vector2(300, 150))
+	await _frames(4)
+	_check(_closed(arena), "（前提）关门")
+	body.queue_free()
+	GameEvents.player_died.emit()
+	await _frames(2)
+	_check(not _closed(arena), "玩家断线：开门，复活后可重来")
+	arena.queue_free()
+	enemy.queue_free()
 	await get_tree().process_frame

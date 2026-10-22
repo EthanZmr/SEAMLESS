@@ -47,6 +47,7 @@ func _ready() -> void:
 	_spawn_patch()
 	_spawn_parts()
 	_spawn_lifts()
+	_spawn_arenas()
 	_spawn_checkpoint()
 	_spawn_boss_trigger()
 	_setup_camera()
@@ -283,6 +284,15 @@ func _spawn_lifts() -> void:
 		lift.stop_a = _pos_of(entry)
 		lift.stop_b = _pos_of(entry, "pos_b")
 		add_child(lift)
+
+
+func _spawn_arenas() -> void:
+	for entry in _entries("arenas"):
+		var arena := ArenaGate.new()
+		arena.arena_id = String(entry.get("kind", ""))
+		arena.name = "Arena_" + arena.arena_id
+		arena.rect = _rect_of(entry)
+		add_child(arena)
 
 
 func _add_seam(pos: Vector2, kind: String) -> void:

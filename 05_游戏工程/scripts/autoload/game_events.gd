@@ -33,3 +33,4 @@ signal level_unloaded(level_id: String)
 ## 暂停状态。
 signal pause_changed(paused: bool)
 signal ability_unlocked(id: String)
+signal arena_cleared(id: String)
