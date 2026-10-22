@@ -1,0 +1,424 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/level/authoring/level_authoring.gd" id="1_p5hdn"]
+[ext_resource type="Script" path="res://scripts/level/authoring/level_entry.gd" id="2_1374d"]
+
+[node name="Level" type="Node2D" unique_id=1901365492]
+script = ExtResource("1_p5hdn")
+level_id = "rain_hub"
+display_name = "雨市 · 吊桥市场（第一阶段切片）"
+bounds = Rect2(-80, -800, 7780, 2800)
+has_spawn = true
+spawn = Vector2(160, 572)
+
+[node name="platforms" type="Node2D" parent="." unique_id=491917706]
+
+[node name="platforms_01" type="Node2D" parent="platforms" unique_id=660191560]
+position = Vector2(-80, -800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(40, 1600)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_02" type="Node2D" parent="platforms" unique_id=1396322907]
+position = Vector2(5300, -800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(40, 1840)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_03" type="Node2D" parent="platforms" unique_id=666955805]
+position = Vector2(-80, 240)
+script = ExtResource("2_1374d")
+rect_size = Vector2(1180, 40)
+color = Color(0.08627451, 0.14901961, 0.23921569, 1)
+
+[node name="platforms_04" type="Node2D" parent="platforms" unique_id=1593292021]
+position = Vector2(-80, 600)
+script = ExtResource("2_1374d")
+rect_size = Vector2(2120, 200)
+
+[node name="platforms_05" type="Node2D" parent="platforms" unique_id=1295875003]
+position = Vector2(2160, 600)
+script = ExtResource("2_1374d")
+rect_size = Vector2(2040, 200)
+
+[node name="platforms_06" type="Node2D" parent="platforms" unique_id=1799832974]
+position = Vector2(3200, 500)
+script = ExtResource("2_1374d")
+rect_size = Vector2(140, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_07" type="Node2D" parent="platforms" unique_id=1965696235]
+position = Vector2(3440, 400)
+script = ExtResource("2_1374d")
+rect_size = Vector2(140, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_08" type="Node2D" parent="platforms" unique_id=1111348176]
+position = Vector2(3200, 300)
+script = ExtResource("2_1374d")
+rect_size = Vector2(140, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_09" type="Node2D" parent="platforms" unique_id=1119686995]
+position = Vector2(3440, 200)
+script = ExtResource("2_1374d")
+rect_size = Vector2(140, 16)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_10" type="Node2D" parent="platforms" unique_id=1551588447]
+position = Vector2(3700, 100)
+script = ExtResource("2_1374d")
+rect_size = Vector2(700, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_11" type="Node2D" parent="platforms" unique_id=953299309]
+position = Vector2(4880, 100)
+script = ExtResource("2_1374d")
+rect_size = Vector2(420, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_12" type="Node2D" parent="platforms" unique_id=810163865]
+position = Vector2(3900, -400)
+script = ExtResource("2_1374d")
+rect_size = Vector2(400, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_13" type="Node2D" parent="platforms" unique_id=751264452]
+position = Vector2(3860, -760)
+script = ExtResource("2_1374d")
+rect_size = Vector2(40, 384)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_14" type="Node2D" parent="platforms" unique_id=302515544]
+position = Vector2(4400, 600)
+script = ExtResource("2_1374d")
+rect_size = Vector2(900, 200)
+
+[node name="platforms_15" type="Node2D" parent="platforms" unique_id=1181568474]
+position = Vector2(4176, 800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(24, 500)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_16" type="Node2D" parent="platforms" unique_id=682372682]
+position = Vector2(4400, 800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(24, 240)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_17" type="Node2D" parent="platforms" unique_id=1415585785]
+position = Vector2(4100, 1300)
+script = ExtResource("2_1374d")
+rect_size = Vector2(3300, 200)
+color = Color(0.08627451, 0.14901961, 0.23921569, 1)
+
+[node name="platforms_18" type="Node2D" parent="platforms" unique_id=1649095415]
+position = Vector2(4400, 1040)
+script = ExtResource("2_1374d")
+rect_size = Vector2(3200, 20)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_19" type="Node2D" parent="platforms" unique_id=460717266]
+position = Vector2(5300, 1220)
+script = ExtResource("2_1374d")
+rect_size = Vector2(80, 80)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_20" type="Node2D" parent="platforms" unique_id=551257530]
+position = Vector2(6200, 1210)
+script = ExtResource("2_1374d")
+rect_size = Vector2(100, 90)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_21" type="Node2D" parent="platforms" unique_id=914745546]
+position = Vector2(7600, 1040)
+script = ExtResource("2_1374d")
+rect_size = Vector2(40, 960)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_22" type="Node2D" parent="platforms" unique_id=129746475]
+position = Vector2(1900, 1900)
+script = ExtResource("2_1374d")
+rect_size = Vector2(5740, 100)
+color = Color(0.08627451, 0.14901961, 0.23921569, 1)
+
+[node name="platforms_23" type="Node2D" parent="platforms" unique_id=1038241502]
+position = Vector2(2400, 1600)
+script = ExtResource("2_1374d")
+rect_size = Vector2(5000, 20)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_24" type="Node2D" parent="platforms" unique_id=1842310608]
+position = Vector2(4300, 1800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(200, 100)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_25" type="Node2D" parent="platforms" unique_id=181482538]
+position = Vector2(1860, 1400)
+script = ExtResource("2_1374d")
+rect_size = Vector2(40, 600)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_26" type="Node2D" parent="platforms" unique_id=110104474]
+position = Vector2(2016, 800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(24, 600)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_27" type="Node2D" parent="platforms" unique_id=92300360]
+position = Vector2(2160, 800)
+script = ExtResource("2_1374d")
+rect_size = Vector2(24, 600)
+color = Color(0.050980393, 0.09803922, 0.15686275, 1)
+
+[node name="platforms_28" type="Node2D" parent="platforms" unique_id=472434166]
+position = Vector2(1980, 1500)
+script = ExtResource("2_1374d")
+rect_size = Vector2(60, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="platforms_29" type="Node2D" parent="platforms" unique_id=2044253354]
+position = Vector2(2160, 1500)
+script = ExtResource("2_1374d")
+rect_size = Vector2(156, 24)
+color = Color(0.13725491, 0.21960784, 0.30980393, 1)
+
+[node name="climb_zones" type="Node2D" parent="." unique_id=720598342]
+
+[node name="climb_zones_01" type="Node2D" parent="climb_zones" unique_id=447722915]
+position = Vector2(2316, 1500)
+script = ExtResource("2_1374d")
+rect_size = Vector2(26, 400)
+
+[node name="climb_zones_02" type="Node2D" parent="climb_zones" unique_id=405181855]
+position = Vector2(4300, -400)
+script = ExtResource("2_1374d")
+rect_size = Vector2(26, 500)
+
+[node name="hook_anchors" type="Node2D" parent="." unique_id=761535737]
+
+[node name="hook_anchors_01" type="Node2D" parent="hook_anchors" unique_id=1018179729]
+position = Vector2(4640, -60)
+script = ExtResource("2_1374d")
+
+[node name="enemies" type="Node2D" parent="." unique_id=1719127664]
+
+[node name="enemies_01" type="Node2D" parent="enemies" unique_id=1887266740]
+position = Vector2(1450, 540)
+script = ExtResource("2_1374d")
+kind = "sweeper"
+
+[node name="enemies_02" type="Node2D" parent="enemies" unique_id=810939841]
+position = Vector2(1750, 540)
+script = ExtResource("2_1374d")
+kind = "sweeper"
+
+[node name="enemies_03" type="Node2D" parent="enemies" unique_id=300984204]
+position = Vector2(3000, 540)
+script = ExtResource("2_1374d")
+kind = "sweeper"
+
+[node name="enemies_04" type="Node2D" parent="enemies" unique_id=1079797352]
+position = Vector2(4800, 1070)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(5200, 1070)
+surface = "ceiling"
+
+[node name="enemies_05" type="Node2D" parent="enemies" unique_id=1271375085]
+position = Vector2(5600, 1070)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(6000, 1070)
+surface = "ceiling"
+
+[node name="enemies_06" type="Node2D" parent="enemies" unique_id=1864868954]
+position = Vector2(6400, 1070)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(6800, 1070)
+surface = "ceiling"
+
+[node name="enemies_07" type="Node2D" parent="enemies" unique_id=821436865]
+position = Vector2(5900, 1880)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(6100, 1880)
+surface = "floor"
+
+[node name="enemies_08" type="Node2D" parent="enemies" unique_id=1581625529]
+position = Vector2(6200, 1880)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(6350, 1880)
+surface = "floor"
+
+[node name="enemies_09" type="Node2D" parent="enemies" unique_id=1364210413]
+position = Vector2(6000, 1840)
+script = ExtResource("2_1374d")
+kind = "sweeper"
+
+[node name="enemies_10" type="Node2D" parent="enemies" unique_id=2031378741]
+position = Vector2(4600, 1630)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(5000, 1630)
+surface = "ceiling"
+
+[node name="enemies_11" type="Node2D" parent="enemies" unique_id=1455840365]
+position = Vector2(3600, 1630)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(4000, 1630)
+surface = "ceiling"
+
+[node name="enemies_12" type="Node2D" parent="enemies" unique_id=501963678]
+position = Vector2(2800, 1880)
+script = ExtResource("2_1374d")
+kind = "crawler"
+has_point_b = true
+point_b = Vector2(3200, 1880)
+surface = "floor"
+drops = "claw"
+
+[node name="enemies_13" type="Node2D" parent="enemies" unique_id=1322741482]
+position = Vector2(4100, -460)
+script = ExtResource("2_1374d")
+kind = "lancer"
+drops = "buffer"
+
+[node name="seams" type="Node2D" parent="." unique_id=711337748]
+
+[node name="patches" type="Node2D" parent="." unique_id=440900446]
+
+[node name="checkpoints" type="Node2D" parent="." unique_id=1080614911]
+
+[node name="checkpoints_01" type="Node2D" parent="checkpoints" unique_id=2048691339]
+position = Vector2(200, 540)
+script = ExtResource("2_1374d")
+
+[node name="checkpoints_02" type="Node2D" parent="checkpoints" unique_id=1562249695]
+position = Vector2(3800, 40)
+script = ExtResource("2_1374d")
+
+[node name="checkpoints_03" type="Node2D" parent="checkpoints" unique_id=228480971]
+position = Vector2(5400, 1840)
+script = ExtResource("2_1374d")
+
+[node name="boss_trigger" type="Node2D" parent="." unique_id=921205486]
+
+[node name="parts" type="Node2D" parent="." unique_id=1013369734]
+
+[node name="lifts" type="Node2D" parent="." unique_id=4358000]
+
+[node name="lifts_01" type="Node2D" parent="lifts" unique_id=1394675305]
+position = Vector2(2100, 1508)
+script = ExtResource("2_1374d")
+kind = "drain_lift"
+has_point_b = true
+point_b = Vector2(2100, 608)
+
+[node name="arenas" type="Node2D" parent="." unique_id=1121461889]
+
+[node name="arenas_01" type="Node2D" parent="arenas" unique_id=159736545]
+position = Vector2(1100, 300)
+script = ExtResource("2_1374d")
+rect_size = Vector2(820, 300)
+kind = "clinic_back"
+
+[node name="arenas_02" type="Node2D" parent="arenas" unique_id=1779883057]
+position = Vector2(5600, 1620)
+script = ExtResource("2_1374d")
+rect_size = Vector2(800, 280)
+kind = "drain_mid"
+
+[node name="arenas_03" type="Node2D" parent="arenas" unique_id=1427442714]
+position = Vector2(3900, -700)
+script = ExtResource("2_1374d")
+rect_size = Vector2(400, 300)
+kind = "hub_top"
+
+[node name="labels" type="Node2D" parent="." unique_id=741017803]
+
+[node name="labels_01" type="Node2D" parent="labels" unique_id=1425572137]
+position = Vector2(120, 420)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "诊所"
+font_size = 20
+
+[node name="labels_02" type="Node2D" parent="labels" unique_id=25105233]
+position = Vector2(300, 560)
+script = ExtResource("2_1374d")
+kind = "hint"
+text = "去交易所找老猫，问清这块补丁是谁的。"
+font_size = 13
+
+[node name="labels_03" type="Node2D" parent="labels" unique_id=1867156641]
+position = Vector2(1300, 260)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "后巷"
+font_size = 20
+
+[node name="labels_04" type="Node2D" parent="labels" unique_id=1042926928]
+position = Vector2(2600, 420)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "吊桥市场"
+font_size = 20
+
+[node name="labels_05" type="Node2D" parent="labels" unique_id=920243520]
+position = Vector2(4500, 1150)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "排水沟"
+font_size = 20
+
+[node name="labels_06" type="Node2D" parent="labels" unique_id=1163610292]
+position = Vector2(6000, 1660)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "排水沟 · 下层"
+font_size = 20
+
+[node name="labels_07" type="Node2D" parent="labels" unique_id=278365178]
+position = Vector2(4950, -160)
+script = ExtResource("2_1374d")
+kind = "zone"
+text = "交易所 →"
+font_size = 20
+
+[node name="labels_08" type="Node2D" parent="labels" unique_id=1263320277]
+position = Vector2(3920, -480)
+script = ExtResource("2_1374d")
+kind = "hint"
+text = "上层：未完成（第三阶段）"
+font_size = 12
+
+[node name="labels_09" type="Node2D" parent="labels" unique_id=487638364]
+position = Vector2(4900, 40)
+script = ExtResource("2_1374d")
+kind = "hint"
+text = "磁轨站：未完成（第四阶段）"
+font_size = 12
+
+[node name="labels_10" type="Node2D" parent="labels" unique_id=1991236754]
+position = Vector2(4400, 60)
+script = ExtResource("2_1374d")
+kind = "gap_marker"
+font_size = 12
+
+[node name="labels_11" type="Node2D" parent="labels" unique_id=934361199]
+position = Vector2(4880, 60)
+script = ExtResource("2_1374d")
+kind = "gap_marker"
+font_size = 12

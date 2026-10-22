@@ -60,7 +60,7 @@ func _test_level_index() -> void:
 		_check(first.has("id"), "关卡条目带 id")
 		_check(first.has("scene"), "关卡条目带 scene")
 		_check(first.has("data"), "关卡条目带 data")
-		_check(str(first.get("id", "")) == "rain_market", "第一关是 rain_market")
+		_check(str(first.get("id", "")) == "rain_hub", "第一关是 rain_hub（雨市切片）")
 
 
 func _test_level_manager_queries() -> void:

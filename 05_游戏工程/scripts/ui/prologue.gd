@@ -149,7 +149,10 @@ func _enter_game() -> void:
 	fade.modulate.a = 0.0
 	var t := create_tween()
 	t.tween_property(fade, "modulate:a", 1.0, 0.7)
-	t.tween_callback(func() -> void: LevelManager.start_level(LevelManager.current_id))
+	# 新游戏：清空能力与剧情标记，从关卡清单第一关（雨市切片）开始（01_GDD/10 §4）。
+	t.tween_callback(func() -> void:
+		GameState.begin_new_game()
+		LevelManager.start_level(LevelManager.level_ids()[0]))
 
 
 func _draw() -> void:

@@ -6,10 +6,19 @@
   },
   "levels": [
     {
-      "id": "rain_market",
+      "id": "rain_hub",
       "display_name": "雨市",
       "subtitle": "SEAMLESS · 01",
       "order": 1,
+      "scene": "res://scenes/main.tscn",
+      "data": "res://data/levels/rain_hub.json",
+      "next": ""
+    },
+    {
+      "id": "rain_market",
+      "display_name": "雨市",
+      "subtitle": "SEAMLESS · 01",
+      "order": 2,
       "scene": "res://scenes/main.tscn",
       "data": "res://data/levels/rain_market.json",
       "next": ""
