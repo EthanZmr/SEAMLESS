@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/level/part_pickup.gd" id="1_part"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_part"]
+radius = 22.0
+
+[node name="PartPickup" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_part")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_part")

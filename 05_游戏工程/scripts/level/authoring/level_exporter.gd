@@ -22,8 +22,13 @@ const CATEGORIES := [
 	["patches", "point"],
 	["checkpoints", "point"],
 	["boss_trigger", "single"],
+	["parts", "point"],
+	["lifts", "point"],
+	["arenas", "rect"],
 	["labels", "label"],
 ]
+## 第一阶段新增的分类：没有条目时不写进 JSON，旧关卡数据保持逐字节不变。
+const OPTIONAL_CATEGORIES := ["parts", "lifts", "arenas"]
 
 
 static func scene_path(level_id: String) -> String:
@@ -83,6 +88,7 @@ static func dict_to_scene(data: Dictionary) -> Node2D:
 						var t: Array = e["tint"]
 						node.has_tint = true
 						node.tint = Color(float(t[0]), float(t[1]), float(t[2]), float(t[3]))
+					node.kind = String(e.get("kind", ""))
 				"label":
 					node.position = _vec(e.get("pos", [0, 0]))
 					node.kind = String(e.get("kind", "hint"))
@@ -93,6 +99,11 @@ static func dict_to_scene(data: Dictionary) -> Node2D:
 					node.kind = String(e.get("kind", ""))
 					if e.has("boss_spawn"):
 						node.boss_spawn = _vec(e["boss_spawn"]) + offset
+					if e.has("pos_b"):
+						node.has_point_b = true
+						node.point_b = _vec(e["pos_b"]) + offset
+					node.surface = String(e.get("surface", ""))
+					node.drops = String(e.get("drops", ""))
 			container.add_child(node)
 	return root
 
@@ -146,7 +157,7 @@ static func scene_to_dict(root: Node, errors: Array = []) -> Dictionary:
 			if out.size() > 1:
 				errors.append("%s 只能有 1 个条目（现在 %d 个）" % [key, out.size()])
 			data[key] = out[0] if not out.is_empty() else {}
-		else:
+		elif not (out.is_empty() and key in OPTIONAL_CATEGORIES):
 			data[key] = out
 	return data
 
@@ -160,6 +171,8 @@ static func _entry_to_dict(node: EntryScript, shape: String, shift: Vector2) -> 
 			var d := {"rect": [_num(p.x), _num(p.y), _num(node.rect_size.x), _num(node.rect_size.y)]}
 			if String(node.get_parent().name) == "platforms":
 				d["color"] = "#" + node.color.to_html(false).to_upper()
+			if String(node.get_parent().name) == "arenas":
+				d["kind"] = node.kind
 			d["shift"] = shift_text
 			if node.has_tint:
 				d["tint"] = [_unit(node.tint.r), _unit(node.tint.g), _unit(node.tint.b), _unit(node.tint.a)]
@@ -179,9 +192,21 @@ static func _entry_to_dict(node: EntryScript, shape: String, shift: Vector2) -> 
 				"shift": shift_text,
 			}
 	# point：enemies 键序是 kind 在前，seams 是 pos 在前，与现有数据保持一致。
+	var pb := node.point_b - offset
 	match String(node.get_parent().name):
 		"enemies":
+			var en := {"kind": node.kind, "pos": [_num(p.x), _num(p.y)], "shift": shift_text}
+			if node.has_point_b:
+				en["pos_b"] = [_num(pb.x), _num(pb.y)]
+			if not node.surface.is_empty():
+				en["surface"] = node.surface
+			if not node.drops.is_empty():
+				en["drops"] = node.drops
+			return en
+		"parts":
 			return {"kind": node.kind, "pos": [_num(p.x), _num(p.y)], "shift": shift_text}
+		"lifts":
+			return {"kind": node.kind, "pos": [_num(p.x), _num(p.y)], "pos_b": [_num(pb.x), _num(pb.y)], "shift": shift_text}
 		"seams":
 			return {"pos": [_num(p.x), _num(p.y)], "kind": node.kind, "shift": shift_text}
 	return {"pos": [_num(p.x), _num(p.y)], "shift": shift_text}

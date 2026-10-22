@@ -18,6 +18,7 @@ const SEAM_SCENE := preload("res://scenes/level/seam.tscn")
 const CHECKPOINT_SCENE := preload("res://scenes/level/checkpoint.tscn")
 const PATCH_SCENE := preload("res://scenes/level/patch_pickup.tscn")
 const BOSS_TRIGGER_SCENE := preload("res://scenes/level/boss_trigger.tscn")
+const PART_SCENE := preload("res://scenes/level/part_pickup.tscn")
 
 ## 兜底路径：LevelManager 不可用（或清单里没这一关）时用。
 const LEVEL_DATA_PATH := "res://data/levels/rain_market.json"
@@ -43,6 +44,7 @@ func _ready() -> void:
 	_spawn_enemies()
 	_spawn_seams()
 	_spawn_patch()
+	_spawn_parts()
 	_spawn_checkpoint()
 	_spawn_boss_trigger()
 	_setup_camera()
@@ -262,6 +264,14 @@ func _spawn_patch() -> void:
 		var patch := PATCH_SCENE.instantiate()
 		patch.position = _pos_of(entry)
 		add_child(patch)
+
+
+func _spawn_parts() -> void:
+	for entry in _entries("parts"):
+		var part := PART_SCENE.instantiate()
+		part.part_id = String(entry.get("kind", ""))
+		part.position = _pos_of(entry)
+		add_child(part)
 
 
 func _add_seam(pos: Vector2, kind: String) -> void:

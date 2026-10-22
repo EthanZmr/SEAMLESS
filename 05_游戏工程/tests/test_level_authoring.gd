@@ -50,6 +50,7 @@ func _init() -> void:
 
 	_check_shift_semantics()
 	_check_structure_errors()
+	_check_new_categories_roundtrip()
 
 	if failures == 0:
 		print("TEST_LEVEL_AUTHORING: PASS (%d assertions)" % total)
@@ -96,6 +97,34 @@ func _check_structure_errors() -> void:
 	_check("enemies/plain 不是 LevelEntry" in joined, "混进非 LevelEntry 节点会报错")
 	_check("boss_trigger 只能有 1 个条目" in joined, "多个 Boss 触发点会报错")
 	root.free()
+
+
+## 第一阶段新增分类与敌人可选字段：两次往返输出一致，且键都在。
+func _check_new_categories_roundtrip() -> void:
+	var data := {
+		"meta": {"id": "t", "display_name": "t", "east_shift": 0.0,
+			"bounds": {"left": 0.0, "right": 100.0, "top": 0.0, "bottom": 100.0}},
+		"enemies": [{"kind": "crawler", "pos": [10.0, 20.0], "shift": "none",
+			"pos_b": [90.0, 20.0], "surface": "ceiling", "drops": "claw"}],
+		"parts": [{"kind": "claw", "pos": [5.0, 6.0], "shift": "none"}],
+		"lifts": [{"kind": "l1", "pos": [0.0, 0.0], "pos_b": [0.0, -320.0], "shift": "none"}],
+		"arenas": [{"rect": [0.0, 0.0, 600.0, 300.0], "kind": "a1", "shift": "none"}],
+	}
+	var root := Exporter.dict_to_scene(data)
+	var errors: Array = []
+	var once := Exporter.scene_to_dict(root, errors)
+	root.free()
+	var root2 := Exporter.dict_to_scene(once)
+	var twice := Exporter.to_json_text(Exporter.scene_to_dict(root2))
+	root2.free()
+	_check(errors.is_empty(), "新分类无结构错误 %s" % [errors])
+	_check(Exporter.to_json_text(once) == twice, "新分类两次往返输出一致")
+	var e: Dictionary = once.get("enemies", [{}])[0]
+	_check(e.get("pos_b") == [90.0, 20.0] and e.get("surface") == "ceiling" and e.get("drops") == "claw",
+		"敌人可选字段 pos_b/surface/drops 保留")
+	_check(once.get("parts", [{}])[0].get("kind") == "claw", "parts 保留 kind")
+	_check(once.get("lifts", [{}])[0].get("pos_b") == [0.0, -320.0], "lifts 保留 pos_b")
+	_check(once.get("arenas", [{}])[0].get("kind") == "a1", "arenas 保留 kind")
 
 
 func _check(condition: bool, label: String) -> void:

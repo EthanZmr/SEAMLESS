@@ -18,6 +18,12 @@ extends Node2D
 @export var kind := ""
 ## Boss 刷出点，世界坐标（只用于 boss_trigger）。
 @export var boss_spawn := Vector2.ZERO
+## 第二个点，世界坐标（JSON "pos_b"：升降梯另一端、沟爬子巡逻另一端）。
+@export var has_point_b := false
+@export var point_b := Vector2.ZERO
+## 敌人可选字段：贴附表面（floor/wall/ceiling）、死亡掉落的零件 id。
+@export var surface := ""
+@export var drops := ""
 @export_group("Label")
 @export_multiline var text := ""
 @export var font_size := 15
@@ -44,12 +50,19 @@ func _draw() -> void:
 		"climb_zones":
 			draw_rect(Rect2(Vector2.ZERO, rect_size), tint if has_tint else Color(0.3, 1.0, 0.5, 0.25))
 			draw_rect(Rect2(Vector2.ZERO, rect_size), Color(0.3, 1.0, 0.5, 0.9), false, 1.0)
+		"arenas":
+			draw_rect(Rect2(Vector2.ZERO, rect_size), Color(0.91, 0.27, 0.23, 0.12))
+			draw_rect(Rect2(Vector2.ZERO, rect_size), Color(0.91, 0.27, 0.23, 0.9), false, 2.0)
+			draw_string(font, Vector2(6, 16), "锁门 %s" % kind, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("#E8463A"))
 		"labels":
 			draw_string(font, Vector2.ZERO, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color("#7FA8C9"))
 		_:
 			var c := _marker_color()
 			draw_circle(Vector2.ZERO, 10.0, c)
 			draw_string(font, Vector2(12, -10), "%s %s" % [category(), kind], HORIZONTAL_ALIGNMENT_LEFT, -1, 12, c)
+			if has_point_b:
+				draw_line(Vector2.ZERO, point_b - position, c, 1.0)
+				draw_circle(point_b - position, 6.0, Color(c, 0.6))
 			if category() == "boss_trigger":
 				var local_spawn := boss_spawn - position
 				draw_line(Vector2.ZERO, local_spawn, c, 1.0)
@@ -64,4 +77,6 @@ func _marker_color() -> Color:
 		"patches": return Color("#8FF5E3")
 		"checkpoints": return Color("#7CFF7C")
 		"boss_trigger": return Color("#FF8C1A")
+		"parts": return Color("#F2B544")
+		"lifts": return Color("#3FE0D0")
 	return Color.WHITE
