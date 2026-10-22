@@ -178,6 +178,8 @@ var hook_air_charge := 0
 var hook_jump_was_held := false
 
 @onready var body: Polygon2D = $Body
+## 锁定形象 v4 的占位贴图（世界高 64，scale 0.125；脚底对齐碰撞底）。动画接入前只翻转、变色。
+@onready var sprite: Sprite2D = $Sprite
 @onready var overlay: Polygon2D = $Overlay
 @onready var tag: Label = $Tag
 
@@ -1177,10 +1179,15 @@ func _update_visuals() -> void:
 	if body == null or overlay == null:
 		return
 	body.color = Color("#3FE0D0") if form == 0 else Color("#FF3E8A")
-	overlay.visible = form == 1
-	overlay.color = Color(1.0, 0.36, 0.48, 0.42) if not GameState.is_takeover else Color(1.0, 0.2, 0.9, 0.55)
+	overlay.visible = false
 	body.scale.x = facing
 	overlay.scale.x = facing
+	if sprite:
+		sprite.scale.x = absf(sprite.scale.y) * float(facing)
+		if form == 0:
+			sprite.modulate = Color.WHITE
+		else:
+			sprite.modulate = Color(1.0, 0.62, 0.78) if not GameState.is_takeover else Color(1.0, 0.45, 0.95)
 	if tag:
 		tag.text = "阿针" if form == 0 else "阿绫"
 		tag.modulate = Color("#BFF7F0") if form == 0 else Color("#FF8FB0")
