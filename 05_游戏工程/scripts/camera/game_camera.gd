@@ -8,6 +8,8 @@ extends Camera2D
 @export var shake_decay := 2.4
 @export var shake_max_offset := Vector2(16.0, 10.0)
 @export var shake_max_roll := 0.06
+## 基础缩放：世界高 64 的角色在 1920×1080 内部分辨率下显示 128px（尺度约定见 01_GDD/09）。
+@export var base_zoom := 2.0
 
 var target: Node2D
 var trauma := 0.0
@@ -39,13 +41,13 @@ func _process(delta: float) -> void:
 		offset = Vector2(
 			sin(_shake_time * 37.0) * shake_max_offset.x,
 			sin(_shake_time * 53.0 + 1.3) * shake_max_offset.y
-		) * amount
+		) * amount / base_zoom  # offset 是世界单位；除以缩放，屏幕震幅保持 W5-01 定稿值
 		rotation = sin(_shake_time * 23.0 + 0.7) * shake_max_roll * amount
 	else:
 		offset = Vector2.ZERO
 		rotation = 0.0
 	punch_strength = move_toward(punch_strength, 0.0, 0.30 * delta)
-	zoom = Vector2.ONE * (1.0 - punch_strength)
+	zoom = Vector2.ONE * base_zoom * (1.0 - punch_strength)
 
 
 func shake(amount: float) -> void:
