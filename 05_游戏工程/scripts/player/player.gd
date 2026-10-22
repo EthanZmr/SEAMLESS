@@ -81,6 +81,7 @@ var HOOK_FREE_JUMP_TIME := 0.45
 var stats_source := "builtin"
 
 enum State { IDLE, RUN, JUMP, FALL, DASH, ATTACK, PARRY, HURT, DEAD, CLIMB, WALL_SLIDE, LEDGE, HOOK }
+enum AttackKind { GROUND, LAUNCHER, AIR }
 
 
 func _state_name() -> String:
@@ -131,7 +132,7 @@ var attack_hit_done := false
 ## 本次挥击是否真的打到了敌人（whiff 判定用）。attack_hit_done 只表示
 ## "判定帧已经执行过"，不代表命中；取消窗必须看这个。
 var attack_hit_landed := false
-var attack_kind := "ground"
+var attack_kind: AttackKind = AttackKind.GROUND
 var attack_time := ATTACK_TIME
 var attack_active := ATTACK_ACTIVE
 var attack_damage := 12.0
@@ -347,7 +348,7 @@ func _handle_input() -> void:
 		# 一段 5-8f 跳 / 9f 连段；二段 6-9f 跳 / 10f 连段；三段是终结技，不可取消。
 		var jump_ok := false
 		var combo_ok := false
-		if attack_kind == "ground":
+		if attack_kind == AttackKind.GROUND:
 			var elapsed := attack_time - attack_timer
 			jump_ok = is_on_floor() and attack_hit_landed and Light1Spec.jump_cancel_window_at(combo_index, elapsed)
 			combo_ok = attack_hit_landed and attack_timer > 0.0 and combo_index < 2 and Light1Spec.combo_input_allowed_at(combo_index, elapsed)
@@ -485,7 +486,7 @@ func _consume_jump() -> void:
 func _cancel_attack_into_jump() -> void:
 	# 三段是终结技：取消买到的是机动（跳起追/躲），不是跳过冷却。
 	# 所以三段取消仍要吃 attack_cd；一段/二段本来就没有冷却，清零即可。
-	var was_finisher := attack_kind == "ground" and combo_index == 2
+	var was_finisher := attack_kind == AttackKind.GROUND and combo_index == 2
 	state = State.JUMP
 	combo_queued = false
 	combo_grace = 0.0
@@ -545,12 +546,12 @@ func _update_action_timers(delta: float) -> void:
 				attack_hit_done = true
 				_do_attack_hit()
 			if attack_timer <= 0.0:
-				if attack_kind == "ground" and combo_queued and combo_index < 2:
+				if attack_kind == AttackKind.GROUND and combo_queued and combo_index < 2:
 					_start_ground_attack(combo_index + 1)
 				else:
 					state = State.IDLE
 					combo_queued = false
-					if attack_kind == "ground" and combo_index < 2:
+					if attack_kind == AttackKind.GROUND and combo_index < 2:
 						combo_grace = COMBO_GRACE
 						combo_next = combo_index + 1
 						attack_cd = 0.0
@@ -576,7 +577,7 @@ func _start_attack() -> void:
 
 func _start_ground_attack(step: int) -> void:
 	state = State.ATTACK
-	attack_kind = "ground"
+	attack_kind = AttackKind.GROUND
 	combo_grace = 0.0
 	combo_next = 0
 	combo_index = clampi(step, 0, 2)
@@ -597,7 +598,7 @@ func _start_launcher() -> void:
 	if not is_on_floor():
 		return
 	state = State.ATTACK
-	attack_kind = "launcher"
+	attack_kind = AttackKind.LAUNCHER
 	combo_index = 0
 	combo_queued = false
 	attack_time = LAUNCH_TIME
@@ -615,7 +616,7 @@ func _start_air_attack() -> void:
 		return
 	air_attack_used = true
 	state = State.ATTACK
-	attack_kind = "air"
+	attack_kind = AttackKind.AIR
 	combo_index = 0
 	combo_queued = false
 	attack_time = AIR_ATTACK_TIME
@@ -650,9 +651,9 @@ func _do_attack_hit() -> void:
 	var hit_any := false
 	var hit_count := 0
 	var spark_color := Color("#FFE6A8")
-	if attack_kind == "launcher":
+	if attack_kind == AttackKind.LAUNCHER:
 		spark_color = Color("#8FF5E3")
-	elif attack_kind == "air":
+	elif attack_kind == AttackKind.AIR:
 		spark_color = Color("#FF7AA8")
 	for enemy in _enemies_in_attack_box(62.0):
 		if not is_instance_valid(enemy) or enemy.get("hp") == null:
@@ -663,9 +664,9 @@ func _do_attack_hit() -> void:
 		if offset.x == 0.0 or signf(offset.x) == signf(float(facing)):
 			if absf(offset.x) <= attack_range and absf(offset.y) <= 62.0:
 				if enemy.has_method("take_hit"):
-					var launch := LAUNCH_FORCE if attack_kind == "launcher" else 0.0
+					var launch := LAUNCH_FORCE if attack_kind == AttackKind.LAUNCHER else 0.0
 					var knockback := 0.0
-					if attack_kind == "ground":
+					if attack_kind == AttackKind.GROUND:
 						var kb := float(COMBO_KNOCKBACK[combo_index])
 						if combo_index == 1:
 							# 二段「拽」：拉向玩家。敌人与玩家不在彼此的碰撞掩码里
@@ -676,7 +677,7 @@ func _do_attack_hit() -> void:
 						var ev: Variant = enemy.get("velocity")
 						if ev is Vector2:
 							enemy.set("velocity", Vector2(signf(offset.x) * kb, ev.y))
-					elif attack_kind == "air":
+					elif attack_kind == AttackKind.AIR:
 						enemy.take_hit(attack_damage, global_position, false)
 						var ev2: Variant = enemy.get("velocity")
 						if ev2 is Vector2:
@@ -686,9 +687,9 @@ func _do_attack_hit() -> void:
 					hit_any = true
 					hit_count += 1
 					var spark_size := 30.0 + 12.0 * float(combo_index)
-					if attack_kind == "launcher":
+					if attack_kind == AttackKind.LAUNCHER:
 						spark_size = 48.0
-					elif attack_kind == "air":
+					elif attack_kind == AttackKind.AIR:
 						spark_size = 34.0
 					_spawn_hit_spark(Vector2(enemy.global_position.x, enemy.global_position.y - 26.0), spark_color, spark_size)
 	if hit_any:
@@ -699,21 +700,21 @@ func _do_attack_hit() -> void:
 			GameState.add_sync(4.0)
 		var weight := 1.0 + float(combo_index) * 0.8
 		var stop_time := 0.075
-		if attack_kind == "ground":
-			stop_time = [0.075, 0.105, 0.160][combo_index]
-		elif attack_kind == "launcher":
+		if attack_kind == AttackKind.GROUND:
+			stop_time = float(Light1Spec.spec_of(combo_index).freeze_ms) / 1000.0
+		elif attack_kind == AttackKind.LAUNCHER:
 			weight = 1.5
 			stop_time = 0.110
-		elif attack_kind == "air":
+		elif attack_kind == AttackKind.AIR:
 			weight = 1.2
 			stop_time = 0.070
 		# One freeze per swing, even when the arc clips two enemies.
 		HitStop.stop(stop_time, 0.06)
 		_shake(5.0 + weight * 3.0 + 0.8 * float(maxi(0, hit_count - 1)))
-		if attack_kind == "launcher":
+		if attack_kind == AttackKind.LAUNCHER:
 			_punch_camera(0.040)
-		elif attack_kind == "ground" and combo_index == 2:
-			_punch_camera(0.055)
+		elif attack_kind == AttackKind.GROUND and combo_index == 2:
+			_punch_camera(float(Light1Spec.LIGHT3.punch))
 
 func _start_dash() -> void:
 	state = State.DASH

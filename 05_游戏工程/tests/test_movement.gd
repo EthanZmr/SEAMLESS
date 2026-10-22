@@ -770,7 +770,7 @@ func _test_air_attack_after_launcher_input() -> void:
 	p.velocity = Vector2(0, 80)
 	for i in range(6):
 		await get_tree().physics_frame
-	_check(p.state == Player.State.ATTACK and p.attack_kind == "air", "launcher recovery J becomes air attack")
+	_check(p.state == Player.State.ATTACK and p.attack_kind == Player.AttackKind.AIR, "launcher recovery J becomes air attack")
 	_cleanup(ctx)
 
 
