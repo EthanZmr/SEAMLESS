@@ -47,19 +47,18 @@ static func wall_dir(
 			return int(dir)
 	return 0
 
-## 身前有没有可抓的边沿：前面实心、上方空、下方实心。
-## 三个探针的口径由调用方决定（player.gd 用 LEDGE_PROBE_* 三个可调参数）。
+## 身前有没有可抓的边沿：前面实心、上方空。
+## 不要求下方也实心：那样厚度不到 26px 的薄台沿永远抓不住（手测 2026-10-23）。
+## "薄平台侧面不算墙"只用于 wall_dir（墙滑/墙跳），不用于抓边。
+## 探针口径由调用方决定（player.gd 用 LEDGE_PROBE_FORWARD / ABOVE）。
 static func can_grab_ledge(
 	world: World2D,
 	origin: Vector2,
 	facing: int,
 	forward: float,
-	above: float,
-	below: float
+	above: float
 ) -> bool:
 	var wall_point := origin + Vector2(float(facing) * forward, 0.0)
 	if not is_solid_at(world, wall_point):
 		return false
-	var up := wall_point + Vector2(0.0, -above)
-	var down := wall_point + Vector2(0.0, below)
-	return not is_solid_at(world, up) and is_solid_at(world, down)
+	return not is_solid_at(world, wall_point + Vector2(0.0, -above))

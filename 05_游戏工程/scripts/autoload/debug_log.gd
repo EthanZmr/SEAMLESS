@@ -31,7 +31,9 @@ var _warn_count := 0
 
 
 func _ready() -> void:
-	var args := OS.get_cmdline_args()
+	# 文档写法是 `godot --path . -- --log`：`--` 之后的参数只在 get_cmdline_user_args() 里，
+	# 不在 get_cmdline_args() 里（4.7.2 实测）。两边都认，不带 `--` 的写法也照样能用。
+	var args := OS.get_cmdline_args() + OS.get_cmdline_user_args()
 	enabled = OS.is_debug_build() and args.has("--hook-debug")
 	logging = args.has("--log")
 

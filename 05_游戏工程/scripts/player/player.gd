@@ -55,6 +55,7 @@ var STITCH_COOLDOWN := 0.80
 
 # Movement kit (range A). Values are whitebox defaults, tuned in W2-01.
 var CLIMB_SPEED := 132.0
+var CLIMB_SNAP_SPEED := 360.0
 var CLIMB_JUMP_VERTICAL := -560.0
 var CLIMB_JUMP_HORIZONTAL := 240.0
 var WALL_SLIDE_SPEED := 150.0
@@ -68,7 +69,6 @@ var LEDGE_VAULT_HORIZONTAL := 240.0
 var LEDGE_VAULT_VERTICAL := -430.0
 var LEDGE_PROBE_FORWARD := 20.0
 var LEDGE_PROBE_ABOVE := 26.0
-var LEDGE_PROBE_BELOW := 26.0
 
 # W2-02 seam hook: pull toward an anchor, no full rope swing.
 var HOOK_RANGE := 320.0
@@ -1093,7 +1093,7 @@ func _try_enter_climb() -> bool:
 	return true
 
 
-func _climb_update(_delta: float) -> void:
+func _climb_update(delta: float) -> void:
 	# While a hook air jump is armed, only the dedicated branch above may
 	# consume Space. Buffered duplicates of the launch press must not trigger
 	# a normal double jump and steal the air jump.
@@ -1115,7 +1115,11 @@ func _climb_update(_delta: float) -> void:
 		state = State.FALL
 		return
 	var y_axis := Input.get_axis("move_up", "move_down")
-	velocity = Vector2(0.0, y_axis * CLIMB_SPEED)
+	# 抓住后横向吸附到梯缝中线（手测 2026-10-23：原先左/中/右都能爬）。
+	# 走 velocity + move_and_slide：贴墙的梯缝会停在墙边，不会穿墙。
+	var snap_dx := climb_zones[0].global_position.x - global_position.x
+	var snap_vx := clampf(snap_dx / delta, -CLIMB_SNAP_SPEED, CLIMB_SNAP_SPEED)
+	velocity = Vector2(snap_vx, y_axis * CLIMB_SPEED)
 	if GameState.has_ability("dash") and InputBuffer.consume("dash", 0.12):
 		_start_dash()
 		return
@@ -1155,8 +1159,7 @@ func _try_grab_ledge() -> bool:
 		global_position,
 		facing,
 		LEDGE_PROBE_FORWARD,
-		LEDGE_PROBE_ABOVE,
-		LEDGE_PROBE_BELOW
+		LEDGE_PROBE_ABOVE
 	)
 
 

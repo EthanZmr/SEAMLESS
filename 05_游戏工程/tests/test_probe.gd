@@ -176,15 +176,21 @@ func _test_ledge() -> void:
 	await _settle()
 
 	var origin := Vector2(2980, 0)
-	_check(MovementProbe.can_grab_ledge(_world(), origin, 1, 20.0, 26.0, 26.0),
-		"边沿：前方实心、上方空、下方实心 → 可抓")
+	_check(MovementProbe.can_grab_ledge(_world(), origin, 1, 20.0, 26.0),
+		"边沿：前方实心、上方空 → 可抓")
 
 	# 头顶再高一截：前方（20, -100）落在空处。
-	_check(not MovementProbe.can_grab_ledge(_world(), Vector2(2980, -100), 1, 20.0, 26.0, 26.0),
+	_check(not MovementProbe.can_grab_ledge(_world(), Vector2(2980, -100), 1, 20.0, 26.0),
 		"悬空处前方无墙 → 不可抓")
 
-	_check(not MovementProbe.can_grab_ledge(_world(), Vector2(8000, 8000), 1, 20.0, 26.0, 26.0),
+	_check(not MovementProbe.can_grab_ledge(_world(), Vector2(8000, 8000), 1, 20.0, 26.0),
 		"前方空旷 → 不可抓")
+
+	# 薄台沿：厚 24，x ∈ [3500, 3580]，y ∈ [0, 24]。下方 26px 处已经出界，也要能抓。
+	_make_block(Vector2(3540, 12), Vector2(80, 24))
+	await _settle()
+	_check(MovementProbe.can_grab_ledge(_world(), Vector2(3482, 10), 1, 20.0, 26.0),
+		"薄台沿（厚 24）→ 可抓")
 
 
 # --- 攻击盒 -------------------------------------------------------------------

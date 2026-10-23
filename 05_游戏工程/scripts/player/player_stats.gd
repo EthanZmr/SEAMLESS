@@ -63,6 +63,8 @@ const PATH := "res://data/player/player_stats.tres"
 
 @export_group("Climb and wall")
 @export var CLIMB_SPEED: float = 132.0
+## 抓住梯缝后横向吸附到中线的最大速度（梯缝宽 26、感应框宽 44，最远偏 35px，约 0.1s 到位）
+@export var CLIMB_SNAP_SPEED: float = 360.0
 @export var CLIMB_JUMP_VERTICAL: float = -560.0
 @export var CLIMB_JUMP_HORIZONTAL: float = 240.0
 @export var WALL_SLIDE_SPEED: float = 150.0
@@ -78,7 +80,6 @@ const PATH := "res://data/player/player_stats.tres"
 @export var LEDGE_VAULT_VERTICAL: float = -430.0
 @export var LEDGE_PROBE_FORWARD: float = 20.0
 @export var LEDGE_PROBE_ABOVE: float = 26.0
-@export var LEDGE_PROBE_BELOW: float = 26.0
 
 @export_group("Seam hook")
 @export var HOOK_RANGE: float = 320.0
@@ -99,12 +100,11 @@ const FIELD_NAMES := [
 	"AIR_ATTACK_RANGE", "AIR_ATTACK_BUFFER",
 	"PARRY_ACTIVE", "PARRY_RECOVERY", "PARRY_COOLDOWN", "INVULN_TIME",
 	"STITCH_RANGE", "STITCH_COOLDOWN",
-	"CLIMB_SPEED", "CLIMB_JUMP_VERTICAL", "CLIMB_JUMP_HORIZONTAL",
+	"CLIMB_SPEED", "CLIMB_SNAP_SPEED", "CLIMB_JUMP_VERTICAL", "CLIMB_JUMP_HORIZONTAL",
 	"WALL_SLIDE_SPEED", "WALL_JUMP_HORIZONTAL", "WALL_JUMP_VERTICAL",
 	"WALL_JUMP_LOCK", "CLIMB_JUMP_LOCK",
 	"DOUBLE_JUMP_VERTICAL", "LEDGE_COOLDOWN", "LEDGE_VAULT_HORIZONTAL",
 	"LEDGE_VAULT_VERTICAL", "LEDGE_PROBE_FORWARD", "LEDGE_PROBE_ABOVE",
-	"LEDGE_PROBE_BELOW",
 	"HOOK_RANGE", "HOOK_SPEED", "HOOK_ARRIVE", "HOOK_JUMP_LOCK",
 	"HOOK_FREE_JUMP_TIME",
 ]

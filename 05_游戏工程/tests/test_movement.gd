@@ -14,9 +14,11 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await _test_climb()
 	await _test_climb_jump()
+	await _test_climb_snaps_to_seam()
 	await _test_platform_not_wall()
 	await _test_double_jump()
 	await _test_ledge()
+	await _test_ledge_thin_platform()
 	await _test_wall_jump()
 	await _test_wall_chain()
 	await _test_wall_double()
@@ -166,6 +168,67 @@ func _test_ledge() -> void:
 	for i in range(5):
 		await get_tree().physics_frame
 	_check(p.state == Player.State.LEDGE, "falling beside a ledge enters LEDGE")
+	await _cleanup(ctx)
+
+
+func _test_ledge_thin_platform() -> void:
+	# 手测 2026-10-23：16–24 厚的台沿抓不住。台面 y=450、厚 24，左沿 x=200。
+	var ctx := await _spawn()
+	var p: Player = ctx["player"]
+	ctx["proto"]._add_platform(Rect2(200, 450, 100, 24), Color.WHITE)
+	InputBuffer.clear()
+	p.global_position = Vector2(185, 420)
+	p.velocity = Vector2(0, 120)
+	p.facing = 1
+	p.state = Player.State.FALL
+	var grabbed := false
+	for i in range(20):
+		await get_tree().physics_frame
+		if p.state == Player.State.LEDGE:
+			grabbed = true
+			break
+	_check(grabbed, "falling beside a 24px-thick platform edge enters LEDGE")
+	await _cleanup(ctx)
+
+
+func _test_climb_snaps_to_seam() -> void:
+	# 手测 2026-10-23：梯缝左/中/右都能爬，抓住后应吸附到中线。
+	var ctx := await _spawn()
+	var p: Player = ctx["player"]
+	var zone := ClimbZone.new()
+	zone.size = Vector2(26, 300)
+	zone.position = Vector2(200, 470)
+	ctx["proto"].add_child(zone)
+	for start_x in [228.0, 174.0]:
+		p.global_position = Vector2(start_x, 591)
+		p.velocity = Vector2.ZERO
+		p.state = Player.State.IDLE
+		for i in range(3):
+			await get_tree().physics_frame
+		Input.action_press("move_up")
+		for i in range(12):
+			await get_tree().physics_frame
+		_check(p.state == Player.State.CLIMB, "x=%d: W beside a free seam enters CLIMB" % start_x)
+		_check(absf(p.global_position.x - 200.0) < 1.0,
+			"x=%d: climbing snaps to seam center (x=%.1f)" % [start_x, p.global_position.x])
+		Input.action_release("move_up")
+		p.state = Player.State.FALL
+		for i in range(30):
+			await get_tree().physics_frame
+
+	# 原型塔边的梯缝中线 410 离墙（x=420）只有 10，吸附要停在墙边，不能穿墙。
+	p.global_position = Vector2(380, 591)
+	p.velocity = Vector2.ZERO
+	p.state = Player.State.IDLE
+	for i in range(3):
+		await get_tree().physics_frame
+	Input.action_press("move_up")
+	for i in range(12):
+		await get_tree().physics_frame
+	_check(p.state == Player.State.CLIMB, "W beside wall seam enters CLIMB")
+	_check(p.global_position.x > 400.0 and p.global_position.x <= 406.5,
+		"wall seam snap stops at the wall (x=%.1f)" % p.global_position.x)
+	Input.action_release("move_up")
 	await _cleanup(ctx)
 
 
