@@ -21,6 +21,7 @@ var GRAVITY := 1400.0
 var MAX_FALL := 820.0
 var COYOTE_TIME := 0.10
 var JUMP_BUFFER := 0.12
+var JUMP_CUT_VELOCITY := -150.0
 var DASH_SPEED := 560.0
 var DASH_TIME := 0.16
 var DASH_COOLDOWN := 0.35
@@ -50,6 +51,7 @@ var PARRY_ACTIVE := CombatMath.ACTIVE_WINDOW
 var PARRY_RECOVERY := CombatMath.RECOVERY_WINDOW
 var PARRY_COOLDOWN := CombatMath.COOLDOWN
 var INVULN_TIME := 0.80
+var HURT_TIME := 0.28
 var STITCH_RANGE := 90.0
 var STITCH_COOLDOWN := 0.80
 
@@ -69,6 +71,7 @@ var LEDGE_VAULT_HORIZONTAL := 240.0
 var LEDGE_VAULT_VERTICAL := -430.0
 var LEDGE_PROBE_FORWARD := 20.0
 var LEDGE_PROBE_ABOVE := 26.0
+var LEDGE_DROP_SPEED := 140.0
 
 # W2-02 seam hook: pull toward an anchor, no full rope swing.
 var HOOK_RANGE := 320.0
@@ -76,6 +79,9 @@ var HOOK_SPEED := 680.0
 var HOOK_ARRIVE := 30.0
 var HOOK_JUMP_LOCK := 0.08
 var HOOK_FREE_JUMP_TIME := 0.45
+var HOOK_JUMP_VERTICAL := -520.0
+var HOOK_JUMP_X_KEEP := 0.25
+var HOOK_DETACH_KEEP := 0.35
 
 ## "builtin" = 使用脚本内建默认值；"resource" = 已从 data/player/player_stats.tres 覆盖。
 var stats_source := "builtin"
@@ -479,8 +485,8 @@ func _handle_input() -> void:
 	if InputBuffer.consume("stitch", 0.12) and stitch_cd <= 0.0:
 		_stitch()
 
-	if hook_jump_lock <= 0.0 and Input.is_action_just_released("jump") and velocity.y < -150.0:
-		velocity.y = -150.0
+	if hook_jump_lock <= 0.0 and Input.is_action_just_released("jump") and velocity.y < JUMP_CUT_VELOCITY:
+		velocity.y = JUMP_CUT_VELOCITY
 
 func _consume_jump() -> void:
 	InputBuffer.consume("jump", JUMP_BUFFER)
@@ -867,7 +873,7 @@ func _take_damage(amount: float, source: Variant) -> void:
 	GameState.damage(amount)
 	invuln = INVULN_TIME
 	state = State.HURT
-	hurt_timer = 0.28
+	hurt_timer = HURT_TIME
 	if state == State.HOOK:
 		_end_hook(false)
 	if source is Node2D:
@@ -979,7 +985,7 @@ func _hook_update(_delta: float) -> void:
 		_dbg("HOOK_JUMP", {"source": jump_source, "stamp_before": jump_stamp_before, "stamp_after": InputBuffer.peek_stamp("jump")})
 		hook_target = null
 		state = State.JUMP
-		velocity = Vector2(velocity.x * 0.25, -520.0)
+		velocity = Vector2(velocity.x * HOOK_JUMP_X_KEEP, HOOK_JUMP_VERTICAL)
 		double_jump_available = true
 		hook_air_charge = 1
 		hook_air_jump_armed = false
@@ -1027,7 +1033,7 @@ func _end_hook(arrived: bool) -> void:
 	state = State.FALL
 	hook_release_pending = false
 	hook_release_grace = 0.0
-	velocity = Vector2.ZERO if arrived else velocity * 0.35
+	velocity = Vector2.ZERO if arrived else velocity * HOOK_DETACH_KEEP
 	# A hook arrival/detach always leaves one free jump. The window must be
 	# long enough for a normal human reaction (the old 0.15s expired before
 	# a Space pressed ~0.18s after arrival, which silently burned the air jump).
@@ -1136,7 +1142,7 @@ func _ledge_update(_delta: float) -> void:
 		ledge_cd = LEDGE_COOLDOWN
 		return
 	if Input.is_action_just_pressed("move_down"):
-		velocity = Vector2(0.0, 140.0)
+		velocity = Vector2(0.0, LEDGE_DROP_SPEED)
 		state = State.FALL
 		ledge_cd = LEDGE_COOLDOWN
 

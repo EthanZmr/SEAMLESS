@@ -20,6 +20,8 @@ const PATH := "res://data/player/player_stats.tres"
 @export var MAX_FALL: float = 820.0
 @export var COYOTE_TIME: float = 0.10
 @export var JUMP_BUFFER: float = 0.12
+## 上升中松开跳键，竖直速度截到这个值（决定小跳高度）
+@export var JUMP_CUT_VELOCITY: float = -150.0
 
 @export_group("Dash")
 @export var DASH_SPEED: float = 560.0
@@ -58,6 +60,7 @@ const PATH := "res://data/player/player_stats.tres"
 @export var PARRY_RECOVERY: float = CombatMath.RECOVERY_WINDOW
 @export var PARRY_COOLDOWN: float = CombatMath.COOLDOWN
 @export var INVULN_TIME: float = 0.80
+@export var HURT_TIME: float = 0.28
 @export var STITCH_RANGE: float = 90.0
 @export var STITCH_COOLDOWN: float = 0.80
 
@@ -80,6 +83,8 @@ const PATH := "res://data/player/player_stats.tres"
 @export var LEDGE_VAULT_VERTICAL: float = -430.0
 @export var LEDGE_PROBE_FORWARD: float = 20.0
 @export var LEDGE_PROBE_ABOVE: float = 26.0
+## 抓边时按下，往下松手的初速度
+@export var LEDGE_DROP_SPEED: float = 140.0
 
 @export_group("Seam hook")
 @export var HOOK_RANGE: float = 320.0
@@ -87,10 +92,15 @@ const PATH := "res://data/player/player_stats.tres"
 @export var HOOK_ARRIVE: float = 30.0
 @export var HOOK_JUMP_LOCK: float = 0.08
 @export var HOOK_FREE_JUMP_TIME: float = 0.45
+## 钩索拉近途中按跳：竖直初速度、保留的水平速度比例
+@export var HOOK_JUMP_VERTICAL: float = -520.0
+@export var HOOK_JUMP_X_KEEP: float = 0.25
+## 没到钩点就脱离（松开 H / 撞墙）时保留的速度比例
+@export var HOOK_DETACH_KEEP: float = 0.35
 
 const FIELD_NAMES := [
 	"SPEED", "LING_SPEED_MULT", "ACCEL", "FRICTION", "AIR_ACCEL",
-	"JUMP_VELOCITY", "GRAVITY", "MAX_FALL", "COYOTE_TIME", "JUMP_BUFFER",
+	"JUMP_VELOCITY", "GRAVITY", "MAX_FALL", "COYOTE_TIME", "JUMP_BUFFER", "JUMP_CUT_VELOCITY",
 	"DASH_SPEED", "DASH_TIME", "DASH_COOLDOWN",
 	"ATTACK_TIME", "ATTACK_ACTIVE", "ATTACK_COOLDOWN", "ATTACK_RANGE",
 	"COMBO_TIMES", "COMBO_ACTIVE", "COMBO_DAMAGE", "COMBO_RANGE",
@@ -98,15 +108,15 @@ const FIELD_NAMES := [
 	"LAUNCH_TIME", "LAUNCH_ACTIVE", "LAUNCH_DAMAGE", "LAUNCH_RANGE", "LAUNCH_FORCE",
 	"AIR_ATTACK_TIME", "AIR_ATTACK_ACTIVE", "AIR_ATTACK_DAMAGE",
 	"AIR_ATTACK_RANGE", "AIR_ATTACK_BUFFER",
-	"PARRY_ACTIVE", "PARRY_RECOVERY", "PARRY_COOLDOWN", "INVULN_TIME",
+	"PARRY_ACTIVE", "PARRY_RECOVERY", "PARRY_COOLDOWN", "INVULN_TIME", "HURT_TIME",
 	"STITCH_RANGE", "STITCH_COOLDOWN",
 	"CLIMB_SPEED", "CLIMB_SNAP_SPEED", "CLIMB_JUMP_VERTICAL", "CLIMB_JUMP_HORIZONTAL",
 	"WALL_SLIDE_SPEED", "WALL_JUMP_HORIZONTAL", "WALL_JUMP_VERTICAL",
 	"WALL_JUMP_LOCK", "CLIMB_JUMP_LOCK",
 	"DOUBLE_JUMP_VERTICAL", "LEDGE_COOLDOWN", "LEDGE_VAULT_HORIZONTAL",
-	"LEDGE_VAULT_VERTICAL", "LEDGE_PROBE_FORWARD", "LEDGE_PROBE_ABOVE",
+	"LEDGE_VAULT_VERTICAL", "LEDGE_PROBE_FORWARD", "LEDGE_PROBE_ABOVE", "LEDGE_DROP_SPEED",
 	"HOOK_RANGE", "HOOK_SPEED", "HOOK_ARRIVE", "HOOK_JUMP_LOCK",
-	"HOOK_FREE_JUMP_TIME",
+	"HOOK_FREE_JUMP_TIME", "HOOK_JUMP_VERTICAL", "HOOK_JUMP_X_KEEP", "HOOK_DETACH_KEEP",
 ]
 
 
