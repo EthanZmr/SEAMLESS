@@ -11,6 +11,7 @@ var _total := 0
 func _ready() -> void:
 	await _test_part_pickup()
 	await _test_lift()
+	await _test_lift_switch_reachable()
 	await _test_arena_closes_and_opens()
 	await _test_arena_empty_never_closes()
 	await _test_arena_opens_on_death()
@@ -250,4 +251,22 @@ func _test_arena_never_traps_outside() -> void:
 	_check(not _closed(arena), "门关着但玩家在外面：开门，不把人关在外面")
 	for n in [arena, enemy, player, floor_body]:
 		n.queue_free()
+	await get_tree().process_frame
+
+
+## 试玩卡点：开关不能放在井口正上方。整个人站在井口旁的平台上（中心在 stop_a 右侧 80）按 E 必须能拉闸。
+func _test_lift_switch_reachable() -> void:
+	GameState.begin_new_game()
+	var lift := _make_lift("t2")
+	if lift == null:
+		return
+	var body := _make_player(Vector2(80, -36))
+	await _frames(3)
+	Input.action_press("interact")
+	await _frames(2)
+	Input.action_release("interact")
+	await _frames(2)
+	_check(GameState.has_flag("lift:t2"), "站在井口旁的平台上按 E 能拉闸")
+	lift.queue_free()
+	body.queue_free()
 	await get_tree().process_frame

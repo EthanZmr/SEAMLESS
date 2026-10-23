@@ -6,6 +6,8 @@ extends AnimatableBody2D
 
 const PLATFORM := Vector2(96, 16)
 const RIDE_DELAY := 0.3
+## 开关放在 stop_a 井口旁的平台上（井口本身是空的，人站不进去）。
+const SWITCH_OFFSET := Vector2(100, -40)
 
 @export var lift_id := ""
 @export var stop_a := Vector2.ZERO
@@ -19,6 +21,7 @@ var _ride_timer := 0.0
 var _need_exit := false
 var _rider: Area2D
 var _switch: Area2D
+var _switch_tag: Label
 var _calls: Array[Area2D] = []
 
 
@@ -34,7 +37,14 @@ func _ready() -> void:
 	add_child(shape)
 	_rider = _make_area("Rider", Vector2(0, -20), Vector2(PLATFORM.x, 24))
 	add_child(_rider)
-	_switch = _make_area("Switch", stop_a + Vector2(0, -40), Vector2(120, 100))
+	_switch = _make_area("Switch", stop_a + SWITCH_OFFSET, Vector2(120, 100))
+	_switch_tag = Label.new()
+	_switch_tag.name = "Tag"
+	_switch_tag.text = "E 拉闸"
+	_switch_tag.position = Vector2(-28, -70)
+	_switch_tag.modulate = Color("#3FE0D0")
+	_switch_tag.visible = not active
+	_switch.add_child(_switch_tag)
 	_calls = [_make_area("CallA", stop_a + Vector2(0, -40), Vector2(160, 120)),
 		_make_area("CallB", stop_b + Vector2(0, -40), Vector2(160, 120))]
 	# 开关与呼叫区固定在世界里，不跟平台走。
@@ -80,6 +90,7 @@ func _physics_process(delta: float) -> void:
 		if Input.is_action_just_pressed("interact") and _has_player(_switch):
 			active = true
 			GameState.set_flag(_flag())
+			_switch_tag.visible = false
 			GameEvents.message.emit("升降梯：通了。")
 			_go(stop_a)
 		return
