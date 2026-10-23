@@ -186,6 +186,8 @@ var hook_jump_was_held := false
 @onready var body: Polygon2D = $Body
 ## 锁定形象 v4 的占位贴图（世界高 64，scale 0.125；脚底对齐碰撞底）。动画接入前只翻转、变色。
 @onready var sprite: Sprite2D = $Sprite
+## 逐帧动画（D21）。某个动作的帧没放齐时它隐藏，退回上面的占位贴图。
+@onready var frames: PlayerFrames = get_node_or_null("Frames")
 @onready var overlay: Polygon2D = $Overlay
 @onready var tag: Label = $Tag
 
@@ -1197,6 +1199,10 @@ func _update_visuals() -> void:
 			sprite.modulate = Color.WHITE
 		else:
 			sprite.modulate = Color(1.0, 0.62, 0.78) if not GameState.is_takeover else Color(1.0, 0.45, 0.95)
+		var anim := "run" if state == State.RUN else ""
+		var rim := Color("#3FE0D0") if form == 0 else Color("#FF3E8A")
+		var framed := frames != null and frames.show_anim(anim, facing, sprite.modulate, rim)
+		sprite.visible = not framed
 	if tag:
 		tag.text = "阿针" if form == 0 else "阿绫"
 		tag.modulate = Color("#BFF7F0") if form == 0 else Color("#FF8FB0")

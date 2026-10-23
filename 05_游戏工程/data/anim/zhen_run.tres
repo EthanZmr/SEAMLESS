@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FrameSet" format=3]
+
+[ext_resource type="Script" path="res://scripts/anim/frame_set.gd" id="1_frames"]
+
+[resource]
+script = ExtResource("1_frames")
+anim_name = "run"
+dir = "res://assets/characters/zhen/run"
+prefix = "char_zhen_run_"
+count = 8
+holds = PackedInt32Array(5, 5, 5, 5, 5, 5, 5, 5)
+loop = true
+canvas = Vector2i(768, 576)
+anchor = Vector2i(384, 560)
+airborne = PackedInt32Array(4, 8)
+baseline_tolerance = 2
+world_scale = 0.125
